@@ -18,10 +18,11 @@ from sklearn.manifold import TSNE
 # Download the necessary NLTK data
 nltk.download('stopwords')
 nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('words')
 
 # Load spaCy's English language model
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_sm")
 
 # Increase spaCy's max length limit
 nlp.max_length = 2000000  # Adjust this value as needed
