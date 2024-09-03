@@ -1,0 +1,11 @@
+streamlit
+tqdm
+nltk
+scikit-learn
+spacy
+pandas
+sentence-transformers
+networkx
+plotly
+numpy
+scipy
