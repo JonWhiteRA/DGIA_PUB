@@ -9,3 +9,10 @@ networkx
 plotly
 numpy
 scipy
+pytesseract
+pdf2image
+pypdf
+pypdf2
+python-docx
+
+
