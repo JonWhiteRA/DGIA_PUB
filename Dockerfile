@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.9
+FROM python:3.9-slim-bullseye
 
 # Set environment variables for Python
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -7,9 +7,6 @@ ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update -y
 RUN apt-get install -y gcc g++
-
-# Install system dependencies
-#RUN apk add --no-cache gcc g++ gfortran musl-dev libffi-dev openblas-dev python3-dev cython
 
 # Set the working directory in the container
 WORKDIR /app

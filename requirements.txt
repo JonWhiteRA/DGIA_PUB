@@ -14,5 +14,6 @@ pdf2image
 pypdf
 pypdf2
 python-docx
-
+docx2txt
+textract
 
