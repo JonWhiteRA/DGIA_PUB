@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.9-slim
+FROM python:3.9
 
 # Set environment variables for Python
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -37,6 +37,10 @@ RUN python -c "import nltk; \
 
 # Copy the data directory into the container
 COPY data/privacy_law_corpus-original_english_text_files /data/corpus
+COPY scripts/output /data/output
+
+ENV CORPUS_PATH="/data/corpus"
+ENV OUTPUT_PATH="/data/output"
 
 EXPOSE 8501
 EXPOSE 8502

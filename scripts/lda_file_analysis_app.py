@@ -53,8 +53,14 @@ n_top_words = st.sidebar.number_input('Number of top words per topic', min_value
 # Load and preprocess the documents
 documents = []
 filenames = []
-directory_path = st.sidebar.text_input("Enter directory path", "../data/privacy_law_corpus-original_english_text_files")
-output_directory_path = st.sidebar.text_input("Enter output directory path", "./output")
+
+# Get environment variables
+corpus_path = os.getenv('CORPUS_PATH', '/data/corpus')  # Optional default value
+output_path = os.getenv('OUTPUT_PATH', '/data/output')  # Optional default value
+
+
+directory_path = st.sidebar.text_input("Enter directory path", corpus_path)
+output_directory_path = st.sidebar.text_input("Enter output directory path", output_path)
 
 if directory_path:
     for filename in os.listdir(directory_path):

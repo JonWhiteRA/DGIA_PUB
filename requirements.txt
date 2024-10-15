@@ -4,11 +4,11 @@ nltk
 scikit-learn
 spacy
 pandas
-sentence-transformers
 networkx
 plotly
 numpy
 scipy
+sentence-transformers
 pytesseract
 pdf2image
 pypdf

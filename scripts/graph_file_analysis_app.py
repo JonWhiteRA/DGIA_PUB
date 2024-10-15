@@ -5,11 +5,15 @@ import streamlit as st
 import pandas as pd
 import os
 
+# Get environment variables
+corpus_path = os.getenv('CORPUS_PATH', '/data/corpus')  # Optional default value
+output_path = os.getenv('OUTPUT_PATH', '/data/output')  # Optional default value
+
 # Step 1: Load the JSON data
-with open('./output/top_related_files_keywords.json', 'r') as file:
+with open(output_path + '/top_related_files_keywords.json', 'r') as file:
     keyword_data = json.load(file)
 
-with open('./output/top_related_files_similarity.json', 'r') as file:
+with open(output_path + '/top_related_files_similarity.json', 'r') as file:
     document_data = json.load(file)
 
 # Function to create a NetworkX graph based on a threshold
@@ -171,7 +175,7 @@ if selected_files:
     # Expander for displaying content of selected files if not selecting all files
     if not select_all:
         st.subheader("Selected Files Content")
-        directory_path = "../data/corpus"
+        directory_path = corpus_path
         #directory_path = st.sidebar.text_input("Enter directory path", "../data/privacy_law_corpus-original_english_text_files")
 
         for selected_file in selected_files:
