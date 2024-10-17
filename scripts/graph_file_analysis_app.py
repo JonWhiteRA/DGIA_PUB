@@ -172,11 +172,15 @@ if selected_files:
     df_document = create_table(document_graph, selected_files)
     st.dataframe(df_document)
 
+    directory_path = st.sidebar.text_input("Enter corpus directory path", corpus_path)
+    output_path = st.sidebar.text_input("Enter corpus directory path", output_path)
+
     # Expander for displaying content of selected files if not selecting all files
     if not select_all:
         st.subheader("Selected Files Content")
-        directory_path = corpus_path
+        #directory_path = corpus_path
         #directory_path = st.sidebar.text_input("Enter directory path", "../data/privacy_law_corpus-original_english_text_files")
+        
 
         for selected_file in selected_files:
             file_path = os.path.join(directory_path, selected_file)
