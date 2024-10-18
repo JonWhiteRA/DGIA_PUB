@@ -56,7 +56,7 @@ filenames = []
 
 # Get environment variables
 corpus_path = os.getenv('CORPUS_PATH', '/data/corpus')  # Optional default value
-output_path = os.getenv('OUTPUT_PATH', '/data/output')  # Optional default value
+output_path = os.getenv('OUTPUT_PATH', '/app/output')  # Optional default value CHANGED
 
 
 directory_path = st.sidebar.text_input("Enter directory path", corpus_path)

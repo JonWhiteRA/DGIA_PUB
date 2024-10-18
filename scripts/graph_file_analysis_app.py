@@ -7,7 +7,7 @@ import os
 
 # Get environment variables
 corpus_path = os.getenv('CORPUS_PATH', '/data/corpus')  # Optional default value
-output_path = os.getenv('OUTPUT_PATH', '/data/output')  # Optional default value
+output_path = os.getenv('OUTPUT_PATH', '/app/output')  # Optional default value CHANGED
 
 # Step 1: Load the JSON data
 with open(output_path + '/top_related_files_keywords.json', 'r') as file:
