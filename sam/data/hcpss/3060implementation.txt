@@ -1,0 +1,139 @@
+
+I. General Provisions
+
+
+
+
+
+In order to process student data properly and maintain the data privacy of individual students, all Howard County Public School System (HCPSS) Board members and school system officials will:
+
+
+
+
+Process only the student data to which they have authorized access;
+
+
+
+Use only authorized methods to process student data; and
+
+
+
+Disclose student data only under authorized conditions, through authorized methods, and to authorized recipients.
+
+
+Authorization will be determined through the procedures for conducting data privacy assessment and implementing data privacy controls as outlined in Section III.
+
+
+II. Parent Inquiries and Notifications
+
+
+
+
+
+To manage and maintain communications with parents about the HCPSS student data governance and privacy practices, the Superintendent/designee will implement methods of annual notification and ongoing communications.
+
+
+
+The annual notifications and ongoing communications will include, but are not limited to:
+
+
+
+
+Publicizing the process for parents to opt out of the collection and/or sharing of their student’s data when the collection and/or sharing does not align with the provisions specified in Section III.B. of the policy.
+
+
+
+Publicize a list of all current enterprise information systems, records management practices, contracts, grants, agreements, and digital tools that involve student data and the student data involved.
+
+
+
+
+III. Data Privacy Assessments and Controls
+
+
+
+
+
+To conduct data privacy assessments on enterprise information systems and records management practices, the Superintendent/designee will coordinate with the department initiating or implementing the system or practice to:
+
+
+
+
+Document the student data that the enterprise information system or records management practice creates, collects, uses, maintains, and/or discloses;
+
+
+
+
+If the information system or records management practice generates new information, the privacy assessment will document the types and purpose of the student data generated.
+
+
+
+If the information system or records management practice receives information from another system or practice, the privacy assessment will document the types and sources of the student data received.
+
+
+
+
+IV. HCPSS Data Privacy Incident Response Plan
+
+
+
+
+
+To maintain a Data Privacy Incident Response Plan that includes Maryland breach notification requirements and aligns with the HCPSS Technology Security Incident Response Procedures, the Superintendent/designee will:
+
+
+
+
+Review its Data Privacy Incident Response Plan at least annually to revise and update the plan according to current nationally benchmarked best practices in risk management, data security, and data privacy;
+
+
+
+Conduct an annual drill of the Data Privacy Incident Response Plan with all relevant HCPSS offices and departments, and modify the plan according to procedural gaps exposed through the drill process; and
+
+
+
+Collaborate with HCPSS executive leadership and departments/offices to align the Data Privacy Incident Response Plan with the HCPSS Continuity of Operations Plan and Disaster Recovery Plan.
+
+
+
+
+V. Data Privacy Reviews
+
+
+
+
+
+To review contracts, grants, and agreements in order to incorporate appropriate data privacy requirements, the Superintendent/designee will:
+
+
+
+
+Coordinate with relevant HCPSS departments/offices to manage and maintain a contract, grant, and agreement review procedure;
+
+
+
+Coordinate with relevant HCPSS departments/offices to identify contracts, grants, and agreements involving student data;
+
+
+
+Coordinate with relevant HCPSS departments/offices to include contractual requirements that safeguard the privacy of student data in identified contracts and agreements; and
+
+
+
+Coordinate with relevant HCPSS departments/offices to ensure that all contracts, grants, and agreements involving student data adhere to the Maryland Student Data Privacy Law.
+
+
+
+
+VI. Monitoring
+
+
+
+Policy 3060 implementation procedures will be overseen by the Office of the Deputy Superintendent.
+
+
+VII. History
+
+
+
+ADOPTED: June 7, 2018
