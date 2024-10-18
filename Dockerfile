@@ -33,14 +33,26 @@ RUN python -c "import nltk; \
                nltk.download('words')"
 
 # Copy the data directory into the container
+# COPY data/privacy_law_corpus-original_english_text_files /data/corpus
+
+# Copy new data into container
+COPY sam/data/govInfo /data/gov
+COPY sam/data/hcpss /data/hcpss
 COPY data/privacy_law_corpus-original_english_text_files /data/corpus
-COPY scripts/output /data/output
+
+# COPY scripts/output /data/output
 
 ENV CORPUS_PATH="/data/corpus"
-ENV OUTPUT_PATH="/data/output"
+ENV OUTPUT_PATH="/app/output"
 
 EXPOSE 8501
 EXPOSE 8502
 
 # Copy all scripts into the container
 COPY scripts/*.py /app/
+
+# Copy scripts from sam folder
+COPY sam/scripts/*_clustering.py /app/
+
+# Save output to volume
+VOLUME /app/output
