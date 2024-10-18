@@ -14,6 +14,7 @@ import pickle
 import pandas as pd
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.manifold import TSNE
+import PyPDF2
 
 # Download the necessary NLTK data
 nltk.download('stopwords')
@@ -29,8 +30,33 @@ nlp.max_length = 2000000  # Adjust this value as needed
 
 # Function to read text from a file
 def read_text(file_path):
-    with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:  # Ignore invalid characters
+    # Check the file extension
+    if file_path.lower().endswith('.pdf'):
+        return read_pdf(file_path)
+    elif file_path.lower().endswith('.txt'):
+        return read_txt(file_path)
+    else:
+        raise ValueError("Unsupported file type: {}".format(file_path))
+
+def read_txt(file_path):
+    with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
         return file.read()
+
+def read_pdf(file_path):
+    text = ""
+    try:
+        with open(file_path, 'rb') as file:
+            reader = PyPDF2.PdfReader(file)
+            for page_num in range(len(reader.pages)):
+                page_text = reader.pages[page_num].extract_text() or ""
+                text += page_text + "\n"  # Add a newline for each page
+            return normalize_text(text)
+    except Exception as e:
+        return f"Error reading PDF file: {e}"
+
+def normalize_text(text):
+    # Normalize whitespace and return
+    return "\n".join(line.strip() for line in text.splitlines() if line.strip())
 
 # Function to extract top N keywords with their counts
 def extract_keywords(files_dict, top_n=25):
@@ -163,6 +189,7 @@ def process_directory(directory):
 
     # Get a list of all .txt files in the directory
     txt_files = [filename for filename in os.listdir(directory) if filename.endswith('.txt')]
+    txt_files = txt_files + [filename for filename in os.listdir(directory) if filename.endswith('.pdf')]
 
     # Loop through each file in the directory and read the content with a progress bar
     for filename in tqdm(txt_files, desc="Reading files", unit="file"):

@@ -6,6 +6,7 @@ import argparse
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
+import PyPDF2
 
 # Function to find overlaps between sets of data (keywords or entities)
 def find_overlaps(data):
@@ -59,10 +60,10 @@ def generate_embeddings(directory, model_name='all-MiniLM-L6-v2'):
 
     # Iterate over all files in the directory
     for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        
         if filename.endswith(".txt"):
-            file_path = os.path.join(directory, filename)
-            
-            # Attempt to read the content of the file
+            # Read content from text files
             try:
                 with open(file_path, "r", encoding="utf-8") as file:
                     text = file.read()
@@ -70,14 +71,30 @@ def generate_embeddings(directory, model_name='all-MiniLM-L6-v2'):
                 print(f"Skipping file {filename} due to decoding error: {e}")
                 continue  # Skip to the next file
             
-            # Replace newlines with spaces in the entire text
-            text = text.replace('\n', ' ').replace('\r', ' ')
-            
-            # Generate the embedding for the document
-            embedding = model.encode(text)
-            
-            # Store the embedding in the dictionary with the filename as the key
-            embeddings_dict[filename] = embedding.tolist()  # Convert to list for JSON serialization
+        elif filename.endswith(".pdf"):
+            # Read content from PDF files
+            text = ""
+            try:
+                with open(file_path, "rb") as file:
+                    reader = PyPDF2.PdfReader(file)
+                    for page in reader.pages:
+                        text += page.extract_text() or ""  # Append text from each page
+            except Exception as e:
+                print(f"Skipping file {filename} due to error: {e}")
+                continue  # Skip to the next file
+
+        else:
+            print(f"Skipping file {filename} (unsupported format).")
+            continue  # Skip unsupported files
+
+        # Replace newlines with spaces in the entire text
+        text = text.replace('\n', ' ').replace('\r', ' ')
+
+        # Generate the embedding for the document
+        embedding = model.encode(text)
+
+        # Store the embedding in the dictionary with the filename as the key
+        embeddings_dict[filename] = embedding.tolist()
 
     return embeddings_dict
 
