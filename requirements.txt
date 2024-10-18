@@ -16,4 +16,4 @@ pypdf2
 python-docx
 docx2txt
 textract
-
+xlsxwriter
