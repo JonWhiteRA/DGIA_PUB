@@ -6,7 +6,20 @@ import numpy as np
 from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering, MeanShift, DBSCAN, Birch, OPTICS, AffinityPropagation
 from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import json
+
+total_steps = 0
+step =0
+
+def update_step():
+    global step
+    step += 1
+    return step
+
+def get_total_steps():
+    global total_steps
+    return total_steps
 
 # Load JSON data based on file format
 def load_data(filename):
@@ -26,7 +39,6 @@ def load_data(filename):
                     item.get("crude_score", 0.0)
                 ])
             return pd.DataFrame(processed_data, columns=["File1", "File2", "Overlap Count", "Total Unique", "Crude Score"])
-
         
     elif filename.endswith("entities.json"):
         freq_data = []
@@ -51,25 +63,23 @@ def load_data(filename):
                 embeddings_data.append(embeddings)
         return pd.DataFrame(embeddings_data)
 
-
-
-    
     # Add more conditions for other JSON formats as needed
     else:
         st.error(f"Unknown file format for {filename}.")
         return pd.DataFrame(columns=["Keyword", "Frequency"])
 
-def run_single_clustering_algorithm(algorithm_name, algorithm, synthetic_data, n_clusters=None):
-    labels = algorithm.fit_predict(synthetic_data)
+def run_single_clustering_algorithm(algorithm_name, algorithm, data, n_clusters=None):
+    labels = algorithm.fit_predict(data)
     results = {
         'Algorithm': algorithm_name,
         'Clusters': len(set(labels)) - (1 if -1 in labels else 0),
-        'Silhouette Score': silhouette_score(synthetic_data, labels) if len(set(labels)) > 1 else None,
-        'Davies-Bouldin': davies_bouldin_score(synthetic_data, labels) if len(set(labels)) > 1 else None,
-        'Calinski-Harabasz': calinski_harabasz_score(synthetic_data, labels) if len(set(labels)) > 1 else None
+        'Silhouette Score': silhouette_score(data, labels) if len(set(labels)) > 1 else None,
+        'Davies-Bouldin': davies_bouldin_score(data, labels) if len(set(labels)) > 1 else None,
+        'Calinski-Harabasz': calinski_harabasz_score(data, labels) if len(set(labels)) > 1 else None
     }
     if n_clusters is not None:
         results['Clusters'] = n_clusters
+    progress_bar.progress(update_step() / get_total_steps())
     return results
 
 
@@ -78,26 +88,26 @@ def run_clustering(X, min_clusters, max_clusters, min_dim, max_dim, file_name):
 
     # Iterate through selected dimensions
     for dim in range(min_dim, max_dim + 1):
-        synthetic_data = X[:, :dim]  # Use the first 'dim' features
+        data_to_dim = X[:, :dim]  # Use the first 'dim' features
 
         # Run clustering algorithms that require number of clusters
         for n_clusters in range(min_clusters, max_clusters + 1):
-            with st.spinner(f'Running clustering for {n_clusters} clusters in {dim}D...'):
-                results.append(run_single_clustering_algorithm('GMM', GaussianMixture(n_components=n_clusters), synthetic_data, n_clusters))
-                results.append(run_single_clustering_algorithm('K-Means', KMeans(n_clusters=n_clusters), synthetic_data, n_clusters))
-                results.append(run_single_clustering_algorithm('Agglomerative', AgglomerativeClustering(n_clusters=n_clusters), synthetic_data, n_clusters))
-                results.append(run_single_clustering_algorithm('Birch', Birch(n_clusters=n_clusters), synthetic_data, n_clusters))
-                results.append(run_single_clustering_algorithm('Spectral', SpectralClustering(n_clusters=n_clusters, assign_labels="discretize", random_state=42), synthetic_data, n_clusters))
+            results.append(run_single_clustering_algorithm('GMM', GaussianMixture(n_components=n_clusters), data_to_dim, n_clusters))
+            results.append(run_single_clustering_algorithm('K-Means', KMeans(n_clusters=n_clusters), data_to_dim, n_clusters))
+            results.append(run_single_clustering_algorithm('Agglomerative', AgglomerativeClustering(n_clusters=n_clusters), data_to_dim, n_clusters))
+            results.append(run_single_clustering_algorithm('Spectral', SpectralClustering(n_clusters=n_clusters, assign_labels="discretize", random_state=42), data_to_dim, n_clusters))
 
-        # Run clustering algorithms that do not require number of clusters
-        with st.spinner(f'Running density-based clustering in {dim}D...'):
-            results.append(run_single_clustering_algorithm('Mean Shift', MeanShift(), synthetic_data))
-            results.append(run_single_clustering_algorithm('DBSCAN', DBSCAN(eps=0.5, min_samples=5), synthetic_data))
-            results.append(run_single_clustering_algorithm('OPTICS', OPTICS(min_samples=5), synthetic_data))
+
+        # Run clustering algorithms that do not require number of clusters (only once)
+        results.append(run_single_clustering_algorithm('Mean Shift', MeanShift(), data_to_dim))
+        results.append(run_single_clustering_algorithm('DBSCAN', DBSCAN(eps=0.5, min_samples=5), data_to_dim))
+        results.append(run_single_clustering_algorithm('OPTICS', OPTICS(min_samples=5), data_to_dim))
+        results.append(run_single_clustering_algorithm('Birch', Birch(), data_to_dim))
 
     return pd.DataFrame(results)
 
-def process_files_and_run_clustering(output_dir, min_clusters, max_clusters, min_dim, max_dim, selected_files):
+
+def process_files_and_run_clustering(output_dir, min_clusters, max_clusters, min_dim, max_dim, selected_files, lda_dim):
     all_results = []
     for file_name in selected_files:
         filename = os.path.join(output_dir, file_name)
@@ -118,6 +128,7 @@ def process_files_and_run_clustering(output_dir, min_clusters, max_clusters, min
     if all_results:
         return pd.concat(all_results, ignore_index=True)
     return pd.DataFrame()  # Return empty DataFrame if no results
+
 
 
 
@@ -187,6 +198,7 @@ else:
         if selected_files:
             min_clusters = st.number_input("Minimum Number of Clusters", min_value=2, max_value=99, value=2)
             max_clusters = st.number_input("Maximum Number of Clusters", min_value=3, max_value=100, value=5)
+            lda_dim = st.number_input("LDA Dimensions", min_value=1, max_value=10, value=2)  # Allow user to specify LDA dimensions
             num_features = 1  # Since we only have frequency data
 
             # one-dimensional data right now
@@ -194,8 +206,11 @@ else:
             max_dim = 1
 
             if st.button("Run Analysis on Selected Files"):
-                st.session_state.results_df = process_files_and_run_clustering(output_dir, min_clusters, max_clusters, min_dim, max_dim, selected_files)
+                total_steps = ((((max_dim - min_dim + 1) * (max_clusters - min_clusters + 1) + (max_dim - min_dim + 1) ) * 4) + 4) * len(selected_files)
+                progress_bar = st.progress(0)
+                st.session_state.results_df = process_files_and_run_clustering(output_dir, min_clusters, max_clusters, min_dim, max_dim, selected_files, lda_dim)
                 if not st.session_state.results_df.empty:
+                    progress_bar.progress(1.0)
                     st.success("Analysis complete!")
 
                     # Display results in a table
