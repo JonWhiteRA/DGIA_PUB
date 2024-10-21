@@ -1,144 +1,139 @@
-# To run test environment from browser
-
 import streamlit as st
 import subprocess
 import os
-from io import BytesIO
 import pandas as pd
 import numpy as np
 from sklearn.mixture import GaussianMixture
-from sklearn.cluster import AgglomerativeClustering, KMeans, SpectralClustering, MeanShift
-from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score, calinski_harabasz_score
-from sklearn.metrics import silhouette_score, davies_bouldin_score
-from scipy.spatial.distance import cdist
+from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering, MeanShift, DBSCAN, Birch, OPTICS, AffinityPropagation
+from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
 import json
 
-true_labels = None
-
-# Function to calculate Dunn Index
-def dunn_index(X, labels):
-    unique_labels = np.unique(labels)
-    if len(unique_labels) < 2:
-        return 0
-    inter_cluster_distances = []
-    intra_cluster_distances = []
-    
-    for i in unique_labels:
-        cluster_i = X[labels == i]
-        intra_distance = np.mean(cdist(cluster_i, cluster_i, 'euclidean')) if len(cluster_i) > 1 else 0
-        intra_cluster_distances.append(intra_distance)
-
-        for j in unique_labels:
-            if i != j:
-                cluster_j = X[labels == j]
-                inter_distance = np.min(cdist(cluster_i, cluster_j, 'euclidean'))
-                inter_cluster_distances.append(inter_distance)
-
-    return np.min(inter_cluster_distances) / np.max(intra_cluster_distances)
-
-# Load JSON data
+# Load JSON data based on file format
 def load_data(filename):
     with open(filename) as file:
         data = json.load(file)
-    # Extract frequencies into a DataFrame
-    freq_data = []
-    for doc, keywords in data.items():
-        for keyword, frequency in keywords:
-            freq_data.append([keyword, frequency])
-    return pd.DataFrame(freq_data, columns=["Keyword", "Frequency"])
 
-def run_clustering(X, min_clusters, max_clusters):
-    results = []
+    if isinstance(data, list):
+        if filename.endswith("output_entities.json") or filename.endswith("scored_keywords.json"):
+            # Process lists of dictionaries
+            processed_data = []
+            for item in data:
+                processed_data.append([
+                    item.get("file1", ""),
+                    item.get("file2", ""),
+                    item.get("overlap_count", 0),
+                    item.get("total_unique", 0),
+                    item.get("crude_score", 0.0)
+                ])
+            return pd.DataFrame(processed_data, columns=["File1", "File2", "Overlap Count", "Total Unique", "Crude Score"])
+
+        
+    elif filename.endswith("entities.json"):
+        freq_data = []
+        for doc, keywords in data.items():
+            for keyword, category, frequency in keywords:
+                freq_data.append([keyword, frequency])
+        return pd.DataFrame(freq_data, columns=["Keyword", "Frequency"])
     
-    for n_clusters in range(min_clusters, max_clusters + 1):
-        with st.spinner(f'Running clustering for {n_clusters} clusters...'):
-            # Gaussian Mixture Model
-            gmm = GaussianMixture(n_components=n_clusters)
-            gmm_labels = gmm.fit_predict(X)
-            gmm_results = {
-                'Algorithm': 'GMM',
-                'Clusters': n_clusters,
-                'Silhouette Score': silhouette_score(X, gmm_labels),
-                'Davies-Bouldin': davies_bouldin_score(X, gmm_labels),
-                'Calinski-Harabasz': calinski_harabasz_score(X, gmm_labels)
-            }
-            results.append(gmm_results)
+    elif filename.endswith("keywords.json"):
+        freq_data = []
+        for doc, keywords in data.items():
+            for keyword_info in keywords:
+                keyword = keyword_info[0]
+                frequency = keyword_info[1]
+                freq_data.append([keyword, frequency])
+        return pd.DataFrame(freq_data, columns=["Keyword", "Frequency"])
+    
+    elif filename.endswith("output_embeddings.json"):
+        embeddings_data = []
+        for doc, embeddings in data.items():
+            if isinstance(embeddings, list):
+                embeddings_data.append(embeddings)
+        return pd.DataFrame(embeddings_data)
 
-            # K-Means
-            kmeans = KMeans(n_clusters=n_clusters)
-            kmeans_labels = kmeans.fit_predict(X)
-            kmeans_results = {
-                'Algorithm': 'K-Means',
-                'Clusters': n_clusters,
-                'Silhouette Score': silhouette_score(X, kmeans_labels),
-                'Davies-Bouldin': davies_bouldin_score(X, kmeans_labels),
-                'Calinski-Harabasz': calinski_harabasz_score(X, kmeans_labels)
-            }
-            results.append(kmeans_results)
 
-            # Agglomerative Clustering
-            agglomerative = AgglomerativeClustering(n_clusters=n_clusters)
-            agglomerative_labels = agglomerative.fit_predict(X)
-            agglomerative_results = {
-                'Algorithm': 'Agglomerative',
-                'Clusters': n_clusters,
-                'Silhouette Score': silhouette_score(X, agglomerative_labels),
-                'Davies-Bouldin': davies_bouldin_score(X, agglomerative_labels),
-                'Calinski-Harabasz': calinski_harabasz_score(X, agglomerative_labels)
-            }
-            results.append(agglomerative_results)
+
+    
+    # Add more conditions for other JSON formats as needed
+    else:
+        st.error(f"Unknown file format for {filename}.")
+        return pd.DataFrame(columns=["Keyword", "Frequency"])
+
+def run_single_clustering_algorithm(algorithm_name, algorithm, synthetic_data, n_clusters=None):
+    labels = algorithm.fit_predict(synthetic_data)
+    results = {
+        'Algorithm': algorithm_name,
+        'Clusters': len(set(labels)) - (1 if -1 in labels else 0),
+        'Silhouette Score': silhouette_score(synthetic_data, labels) if len(set(labels)) > 1 else None,
+        'Davies-Bouldin': davies_bouldin_score(synthetic_data, labels) if len(set(labels)) > 1 else None,
+        'Calinski-Harabasz': calinski_harabasz_score(synthetic_data, labels) if len(set(labels)) > 1 else None
+    }
+    if n_clusters is not None:
+        results['Clusters'] = n_clusters
+    return results
+
+
+def run_clustering(X, min_clusters, max_clusters, min_dim, max_dim, file_name):
+    results = []
+
+    # Iterate through selected dimensions
+    for dim in range(min_dim, max_dim + 1):
+        synthetic_data = X[:, :dim]  # Use the first 'dim' features
+
+        # Run clustering algorithms that require number of clusters
+        for n_clusters in range(min_clusters, max_clusters + 1):
+            with st.spinner(f'Running clustering for {n_clusters} clusters in {dim}D...'):
+                results.append(run_single_clustering_algorithm('GMM', GaussianMixture(n_components=n_clusters), synthetic_data, n_clusters))
+                results.append(run_single_clustering_algorithm('K-Means', KMeans(n_clusters=n_clusters), synthetic_data, n_clusters))
+                results.append(run_single_clustering_algorithm('Agglomerative', AgglomerativeClustering(n_clusters=n_clusters), synthetic_data, n_clusters))
+                results.append(run_single_clustering_algorithm('Birch', Birch(n_clusters=n_clusters), synthetic_data, n_clusters))
+                results.append(run_single_clustering_algorithm('Spectral', SpectralClustering(n_clusters=n_clusters, assign_labels="discretize", random_state=42), synthetic_data, n_clusters))
+
+        # Run clustering algorithms that do not require number of clusters
+        with st.spinner(f'Running density-based clustering in {dim}D...'):
+            results.append(run_single_clustering_algorithm('Mean Shift', MeanShift(), synthetic_data))
+            results.append(run_single_clustering_algorithm('DBSCAN', DBSCAN(eps=0.5, min_samples=5), synthetic_data))
+            results.append(run_single_clustering_algorithm('OPTICS', OPTICS(min_samples=5), synthetic_data))
 
     return pd.DataFrame(results)
 
-def test_clusters(out):
-    filename = out + '/keywords.json'
+def process_files_and_run_clustering(output_dir, min_clusters, max_clusters, min_dim, max_dim, selected_files):
+    all_results = []
+    for file_name in selected_files:
+        filename = os.path.join(output_dir, file_name)
+        data = load_data(filename)
 
-    # Load data
-    data = load_data(filename)
+        if data.empty:
+            continue  # Skip empty DataFrame if unknown format
 
-    # Convert frequencies to a NumPy array for clustering
-    frequency_data = data['Frequency'].values.reshape(-1, 1)
+        # Clustering logic for other files
+        if file_name.endswith("output_embeddings.json"):
+            frequency_data = data.values  # No reshaping needed
+        else:
+            frequency_data = data['Frequency'].values.reshape(-1, 1)
 
-    # Parameters for clustering
-    min_clusters = st.number_input("Minimum Number of Clusters", min_value=1, max_value=10, value=2)
-    max_clusters = st.number_input("Maximum Number of Clusters", min_value=1, max_value=10, value=5)
+        results_df = run_clustering(frequency_data, min_clusters, max_clusters, min_dim, max_dim, file_name)
+        all_results.append(results_df)
+    
+    if all_results:
+        return pd.concat(all_results, ignore_index=True)
+    return pd.DataFrame()  # Return empty DataFrame if no results
 
-    # Perform clustering
-    if st.button("Run Clustering"):
-        results_df = run_clustering(frequency_data, min_clusters, max_clusters)
-        st.write("Clustering Results:")
-        st.dataframe(results_df)
 
-        csv = results_df.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download as CSV",
-            data=csv,
-            file_name='results.csv',
-            mime='text/csv'
-        )
 
-# Define the available data folders
+# Streamlit app interface
+st.title("Cluster and Dataset Testing")
 data_folders = {
     "Howard County Public School System": "/data/hcpss/",
     "GovInfo": "/data/gov/",
     "General": "/data/corpus/"
 }
-
 output_folders = {
     "Howard County Public School System": "output/hcpss/",
     "GovInfo": "output/govInfo/",
     "General": "output/general/"
 }
-
-# pre-processing
 script_path = "corpus_processor_1.py"
-
-# Streamlit app interface
-st.title("Cluster and Dataset Testing")
-
-selected_dataset = st.selectbox("Choose a dataset", list(data_folders.keys()))
-folder_path = data_folders[selected_dataset]
-output_dir = output_folders[selected_dataset]
 
 if 'is_running' not in st.session_state:
     st.session_state.is_running = False
@@ -146,48 +141,75 @@ if 'output' not in st.session_state:
     st.session_state.output = None
 if 'error' not in st.session_state:
     st.session_state.error = None
+if 'results_df' not in st.session_state:
+    st.session_state.results_df = pd.DataFrame()
 
-# Button to run the script
-if st.button("Run"):
-    st.session_state.is_running = True  # Set running state to True
-    command = f"python {script_path} --output_dir {output_dir} {folder_path}"
+selected_dataset = st.selectbox("Choose a dataset", list(data_folders.keys()))
+folder_path = data_folders[selected_dataset]
+output_dir = output_folders[selected_dataset]
+
+# Button to load data
+if st.button("Load Data"):
+    st.session_state.is_running = True
+    command1 = f"python {script_path} --output_dir {output_dir} {folder_path}"
     command2 = f"python corpus_processor_2.py --output_dir {output_dir} {folder_path}"
-    
-    # Execute the command
-    try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True)
-        if result.returncode == 0:
-            st.session_state.output = result.stdout  # Store output
-            st.session_state.error = None
-        else:
-            st.session_state.error = result.stderr  # Store error
-            st.session_state.output = None
-    except Exception as e:
-        st.session_state.error = str(e)  # Store exception message
-        st.session_state.output = None
-    finally:
-        try:
-            result = subprocess.run(command2, shell=True, capture_output=True, text=True)
-            if result.returncode == 0:
-                st.session_state.output = result.stdout  # Store output
-                st.session_state.error = None
-            else:
-                st.session_state.error = result.stderr  # Store error
-                st.session_state.output = None
-        except Exception as e:
-            st.session_state.error = str(e)  # Store exception message
-            st.session_state.output = None
-        st.session_state.is_running = False  # Reset running state
 
-# Conditional display based on running state
+    output_dir_contents = os.listdir(output_dir)
+
+    if "entities.json" in output_dir_contents:
+        if "top_related_files_entities.json" in output_dir_contents:
+            st.session_state.output = "Data already processed."
+        else:
+            result = subprocess.run(command2, shell=True, capture_output=True, text=True)
+            st.session_state.output = result.stdout if result.returncode == 0 else result.stderr
+    else:
+        result = subprocess.run(command1, shell=True, capture_output=True, text=True)
+        st.session_state.output = result.stdout if result.returncode == 0 else result.stderr
+        if result.returncode == 0:
+            result2 = subprocess.run(command2, shell=True, capture_output=True, text=True)
+            st.session_state.output += "\n" + (result2.stdout if result2.returncode == 0 else result2.stderr)
+
+    st.session_state.is_running = False
+
+# Conditional display
 if st.session_state.is_running:
-    st.spinner("Running script...")  # Show spinner while running
+    st.spinner("Running script...")
 else:
-    # Display output or error if available
-    if st.session_state.output is not None:
+    if st.session_state.output:
         st.write("Results:")
         st.code(st.session_state.output)
-        test_clusters(output_dir)
 
-    if st.session_state.error is not None:
+        # Dropdown for selecting files after processing
+        all_files = os.listdir(output_dir)
+        filtered_files = [f for f in all_files if f.endswith('.json') and not (f.startswith('scored') or f.startswith('top'))]
+        selected_files = st.multiselect("Select JSON files for analysis", filtered_files)
+
+        if selected_files:
+            min_clusters = st.number_input("Minimum Number of Clusters", min_value=2, max_value=99, value=2)
+            max_clusters = st.number_input("Maximum Number of Clusters", min_value=3, max_value=100, value=5)
+            num_features = 1  # Since we only have frequency data
+
+            # one-dimensional data right now
+            min_dim = 1
+            max_dim = 1
+
+            if st.button("Run Analysis on Selected Files"):
+                st.session_state.results_df = process_files_and_run_clustering(output_dir, min_clusters, max_clusters, min_dim, max_dim, selected_files)
+                if not st.session_state.results_df.empty:
+                    st.success("Analysis complete!")
+
+                    # Display results in a table
+                    st.write("Clustering Results:")
+                    st.dataframe(st.session_state.results_df)
+
+                    # Create CSV download
+                    csv = st.session_state.results_df.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        label="Download as CSV",
+                        data=csv,
+                        file_name='clustering_results.csv',
+                        mime='text/csv',
+                    )
+
+    if st.session_state.error:
         st.error("Error occurred:\n" + st.session_state.error)
