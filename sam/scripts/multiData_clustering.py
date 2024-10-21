@@ -130,101 +130,100 @@ def process_files_and_run_clustering(output_dir, min_clusters, max_clusters, min
     return pd.DataFrame()  # Return empty DataFrame if no results
 
 
+def show_page():
+    # Streamlit app interface
+    st.title("Cluster and Dataset Testing")
+    data_folders = {
+        "Howard County Public School System": "/data/hcpss/",
+        "GovInfo": "/data/gov/",
+        "General": "/data/corpus/"
+    }
+    output_folders = {
+        "Howard County Public School System": "output/hcpss/",
+        "GovInfo": "output/govInfo/",
+        "General": "output/general/"
+    }
+    script_path = "corpus_processor_1.py"
 
+    if 'is_running' not in st.session_state:
+        st.session_state.is_running = False
+    if 'output' not in st.session_state:
+        st.session_state.output = None
+    if 'error' not in st.session_state:
+        st.session_state.error = None
+    if 'results_df' not in st.session_state:
+        st.session_state.results_df = pd.DataFrame()
 
-# Streamlit app interface
-st.title("Cluster and Dataset Testing")
-data_folders = {
-    "Howard County Public School System": "/data/hcpss/",
-    "GovInfo": "/data/gov/",
-    "General": "/data/corpus/"
-}
-output_folders = {
-    "Howard County Public School System": "output/hcpss/",
-    "GovInfo": "output/govInfo/",
-    "General": "output/general/"
-}
-script_path = "corpus_processor_1.py"
+    selected_dataset = st.selectbox("Choose a dataset", list(data_folders.keys()))
+    folder_path = data_folders[selected_dataset]
+    output_dir = output_folders[selected_dataset]
 
-if 'is_running' not in st.session_state:
-    st.session_state.is_running = False
-if 'output' not in st.session_state:
-    st.session_state.output = None
-if 'error' not in st.session_state:
-    st.session_state.error = None
-if 'results_df' not in st.session_state:
-    st.session_state.results_df = pd.DataFrame()
+    # Button to load data
+    if st.button("Load Data"):
+        st.session_state.is_running = True
+        command1 = f"python {script_path} --output_dir {output_dir} {folder_path}"
+        command2 = f"python corpus_processor_2.py --output_dir {output_dir} {folder_path}"
 
-selected_dataset = st.selectbox("Choose a dataset", list(data_folders.keys()))
-folder_path = data_folders[selected_dataset]
-output_dir = output_folders[selected_dataset]
+        output_dir_contents = os.listdir(output_dir)
 
-# Button to load data
-if st.button("Load Data"):
-    st.session_state.is_running = True
-    command1 = f"python {script_path} --output_dir {output_dir} {folder_path}"
-    command2 = f"python corpus_processor_2.py --output_dir {output_dir} {folder_path}"
-
-    output_dir_contents = os.listdir(output_dir)
-
-    if "entities.json" in output_dir_contents:
-        if "top_related_files_entities.json" in output_dir_contents:
-            st.session_state.output = "Data already processed."
+        if "entities.json" in output_dir_contents:
+            if "top_related_files_entities.json" in output_dir_contents:
+                st.session_state.output = "Data already processed."
+            else:
+                result = subprocess.run(command2, shell=True, capture_output=True, text=True)
+                st.session_state.output = result.stdout if result.returncode == 0 else result.stderr
         else:
-            result = subprocess.run(command2, shell=True, capture_output=True, text=True)
+            result = subprocess.run(command1, shell=True, capture_output=True, text=True)
             st.session_state.output = result.stdout if result.returncode == 0 else result.stderr
+            if result.returncode == 0:
+                result2 = subprocess.run(command2, shell=True, capture_output=True, text=True)
+                st.session_state.output += "\n" + (result2.stdout if result2.returncode == 0 else result2.stderr)
+
+        st.session_state.is_running = False
+
+    # Conditional display
+    if st.session_state.is_running:
+        st.spinner("Running script...")
     else:
-        result = subprocess.run(command1, shell=True, capture_output=True, text=True)
-        st.session_state.output = result.stdout if result.returncode == 0 else result.stderr
-        if result.returncode == 0:
-            result2 = subprocess.run(command2, shell=True, capture_output=True, text=True)
-            st.session_state.output += "\n" + (result2.stdout if result2.returncode == 0 else result2.stderr)
+        if st.session_state.output:
+            st.write("Results:")
+            st.code(st.session_state.output)
 
-    st.session_state.is_running = False
+            # Dropdown for selecting files after processing
+            all_files = os.listdir(output_dir)
+            filtered_files = [f for f in all_files if f.endswith('.json') and not (f.startswith('scored') or f.startswith('top'))]
+            selected_files = st.multiselect("Select JSON files for analysis", filtered_files)
 
-# Conditional display
-if st.session_state.is_running:
-    st.spinner("Running script...")
-else:
-    if st.session_state.output:
-        st.write("Results:")
-        st.code(st.session_state.output)
+            if selected_files:
+                min_clusters = st.number_input("Minimum Number of Clusters", min_value=2, max_value=99, value=2)
+                max_clusters = st.number_input("Maximum Number of Clusters", min_value=3, max_value=100, value=5)
+                lda_dim = st.number_input("LDA Dimensions", min_value=1, max_value=10, value=2)  # Allow user to specify LDA dimensions
+                num_features = 1  # Since we only have frequency data
 
-        # Dropdown for selecting files after processing
-        all_files = os.listdir(output_dir)
-        filtered_files = [f for f in all_files if f.endswith('.json') and not (f.startswith('scored') or f.startswith('top'))]
-        selected_files = st.multiselect("Select JSON files for analysis", filtered_files)
+                # one-dimensional data right now
+                min_dim = 1
+                max_dim = 1
 
-        if selected_files:
-            min_clusters = st.number_input("Minimum Number of Clusters", min_value=2, max_value=99, value=2)
-            max_clusters = st.number_input("Maximum Number of Clusters", min_value=3, max_value=100, value=5)
-            lda_dim = st.number_input("LDA Dimensions", min_value=1, max_value=10, value=2)  # Allow user to specify LDA dimensions
-            num_features = 1  # Since we only have frequency data
+                if st.button("Run Analysis on Selected Files"):
+                    total_steps = ((((max_dim - min_dim + 1) * (max_clusters - min_clusters + 1) + (max_dim - min_dim + 1) ) * 4) + 4) * len(selected_files)
+                    progress_bar = st.progress(0)
+                    st.session_state.results_df = process_files_and_run_clustering(output_dir, min_clusters, max_clusters, min_dim, max_dim, selected_files, lda_dim)
+                    if not st.session_state.results_df.empty:
+                        progress_bar.progress(1.0)
+                        st.success("Analysis complete!")
 
-            # one-dimensional data right now
-            min_dim = 1
-            max_dim = 1
+                        # Display results in a table
+                        st.write("Clustering Results:")
+                        st.dataframe(st.session_state.results_df)
 
-            if st.button("Run Analysis on Selected Files"):
-                total_steps = ((((max_dim - min_dim + 1) * (max_clusters - min_clusters + 1) + (max_dim - min_dim + 1) ) * 4) + 4) * len(selected_files)
-                progress_bar = st.progress(0)
-                st.session_state.results_df = process_files_and_run_clustering(output_dir, min_clusters, max_clusters, min_dim, max_dim, selected_files, lda_dim)
-                if not st.session_state.results_df.empty:
-                    progress_bar.progress(1.0)
-                    st.success("Analysis complete!")
+                        # Create CSV download
+                        csv = st.session_state.results_df.to_csv(index=False).encode('utf-8')
+                        st.download_button(
+                            label="Download as CSV",
+                            data=csv,
+                            file_name='clustering_results.csv',
+                            mime='text/csv',
+                        )
 
-                    # Display results in a table
-                    st.write("Clustering Results:")
-                    st.dataframe(st.session_state.results_df)
-
-                    # Create CSV download
-                    csv = st.session_state.results_df.to_csv(index=False).encode('utf-8')
-                    st.download_button(
-                        label="Download as CSV",
-                        data=csv,
-                        file_name='clustering_results.csv',
-                        mime='text/csv',
-                    )
-
-    if st.session_state.error:
-        st.error("Error occurred:\n" + st.session_state.error)
+        if st.session_state.error:
+            st.error("Error occurred:\n" + st.session_state.error)
