@@ -68,13 +68,16 @@ def prepare_feature_matrix_embeddings(data):
 
 # Prepare feature matrix for entities
 def prepare_feature_matrix_entities(data):
+    print("making feature matrix for entities!")
     titles = list(data.keys())
     entity_set = set()
+    print("looking through file")
     for entities in data.values():
         for entity in entities:
             entity_set.add(entity[0])
     entity_list = sorted(entity_set)
     feature_matrix = np.zeros((len(data), len(entity_list)))
+    print("creating feature matrix")
     for i, (title, entities) in enumerate(data.items()):
         for entity in entities:
             index = entity_list.index(entity[0])
@@ -102,6 +105,7 @@ def generate_features(selected_file, file_path):
             titles, feature_matrix = prepare_feature_matrix_embeddings(data)
         elif selected_file == 'entities.json':
             titles, feature_matrix = prepare_feature_matrix_entities(data)
+            print("done making feature matrix")
         else:
             titles, feature_matrix = prepare_feature_matrix_keywords(data)
 
@@ -155,8 +159,8 @@ def plot_clusters(feature_matrix, clusters, pca_dims, titles):
         st.plotly_chart(fig)
 
 def spreadsheet_metrics(dataset_name, file_name, algorithm_name, data, labels):
-    (s, db, ch, g, d, coh, sep, x) = calculate_metrics(data, labels)
-    (score, grades) = grade(s, db, ch, g, d, coh, sep, x)
+    (s, db, ch, d, coh, sep, x) = calculate_metrics(data, labels)
+    (score, grades) = grade(s, db, ch, d, coh, sep, x)
     results = {
         'Dataset'          : dataset_name,
         'File'             : file_name,
@@ -165,7 +169,6 @@ def spreadsheet_metrics(dataset_name, file_name, algorithm_name, data, labels):
         'Silhouette Score' : s,
         'Davies-Bouldin'   : db,
         'Calinski-Harabasz': ch,
-        'Gap Statistic'    : g,
         'Dunn Index'       : d,
         'Cohesion'         : cohesion(data, labels),
         'Separation'       : separation(data, labels),
@@ -177,15 +180,14 @@ def spreadsheet_metrics(dataset_name, file_name, algorithm_name, data, labels):
 
 def display_metrics(feature_matrix, clusters):
         # Calculate clustering metrics
-        (s, db, ch, g, d, coh, sep, x) = calculate_metrics(feature_matrix, clusters)
-        (score, letter) = grade(s, db, ch, g, d, coh, sep, x)
+        (s, db, ch, d, coh, sep, x) = calculate_metrics(feature_matrix, clusters)
+        (score, letter) = grade(s, db, ch, d, coh, sep, x)
 
         # Display metrics
         st.subheader("Clustering Metrics")
         st.write(f"Silhouette Score: {str(s)}")
         st.write(f"Davies-Bouldin Index: {str(db)}")
         st.write(f"Calinski-Harabasz: {str(ch)}")
-        st.write(f"Gap Statistic: {str(g)}")
         st.write(f"Dunn Index: {str(d)}")
         st.write(f"Overall Score: {str(score)}")
         st.write(f"Overall Grade: {str(letter)}")
@@ -247,6 +249,7 @@ def preprocess_data(output_dir, folder_path):
         output_dir_contents = os.listdir(output_dir)
 
         if "entities.json" in output_dir_contents:
+            print("entities file!")
             if "top_related_files_entities.json" in output_dir_contents:
                 st.session_state.output = "Data already processed."
             else:

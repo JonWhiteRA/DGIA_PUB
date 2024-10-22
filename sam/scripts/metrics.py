@@ -3,14 +3,13 @@ from sklearn.cluster import AgglomerativeClustering
 import numpy as np
 
 METRICS_THRESHOLDS = {
-    'Silhouette'        : [0, 0.25, 0.5, 0.75],
-    'Gap Statistic'     : [-50, 0, 50, 100],
-    'Calinski-Harabasz' : [0, 1, 4, 16],
-    'Dunn Index'        : [0, 0.5, 1, 2],
-    'Davies-Bouldin'    : [0.25, 1, 4, 16],
-    'Cohesion'          : [10, 20, 30, 40],
-    'Separation'        : [0, 20, 40, 60, 80],
-    'Xie-Beni Index'    : [0, 0.15, 0.3, 0.45]
+    'Silhouette'        : [0.03, 0.07, 0.23, 0.67],
+    'Calinski-Harabasz' : [2.24, 5.59, 12.67, 54.84],
+    'Dunn Index'        : [0.93, 1.01, 1.23, 2.95],
+    'Davies-Bouldin'    : [0.23, 0.81, 1.77, 3.47],
+    'Cohesion'          : [0, 52.66, 19.76, 25.55],
+    'Separation'        : [30.63, 47.84, 73.6, 126.25],
+    'Xie-Beni Index'    : [0.2, 0.42, 0.85, 1.00]
 }
 
 # Generated
@@ -140,7 +139,7 @@ def gap_statistic(data, labels, n_references=10):
 
     return max(gaps)
 
-
+# Create a score for the metric
 def score(x, scores):
     if x is None:
         return 0
@@ -154,29 +153,37 @@ def score(x, scores):
         points = 75
     else:
         points = 100
-    return points / len(list(METRICS_THRESHOLDS.keys()))
+    return points
 
-
-def grade(s, db, ch, g, d, coh, sep, x):
+# Grade cluster algorithm
+def grade(s, db, ch, d, coh, sep, x):
     # 100 points possible
     points = 0
+    errored = 0
     # silhouette score: (-1, 1), want closer to 1
     points += score(s, METRICS_THRESHOLDS['Silhouette'])
     # # davies-bouldin: want nearly 0 score
     if db is not None:
-        points += (100/len(list(METRICS_THRESHOLDS.keys()))) - score(db, METRICS_THRESHOLDS['Davies-Bouldin'])
-    # gap statistic: want positive and significantly higher than 0
-    points += score(g, METRICS_THRESHOLDS['Gap Statistic'])
+        points += 100 - score(db, METRICS_THRESHOLDS['Davies-Bouldin'])
     # calinski-harabasz: higher is better!
     points += score(ch, METRICS_THRESHOLDS['Calinski-Harabasz'])
     # dunn index: higher is better, want > 1
     points += score(d, METRICS_THRESHOLDS['Dunn Index'])
     # cohesion: lower is better
-    points += (100/len(list(METRICS_THRESHOLDS.keys()))) - score(coh, METRICS_THRESHOLDS['Cohesion'])
+    points += 100 - score(coh, METRICS_THRESHOLDS['Cohesion'])
     # separation: higher is better
-    points += score(sep, METRICS_THRESHOLDS['Separation'])
+    separation = score(sep, METRICS_THRESHOLDS['Separation'])
+    points += separation
     # xie-beni: lower is better
-    points += (100/len(list(METRICS_THRESHOLDS.keys()))) - score(x, METRICS_THRESHOLDS['Xie-Beni Index'])
+    xie = score(x, METRICS_THRESHOLDS['Xie-Beni Index'])
+    points += 100 - xie
+
+    if xie is None:
+        errored += 1
+    if separation is None:
+        errored += 1
+    
+    points = points / (len(set(METRICS_THRESHOLDS.keys())) - errored)
 
     if points < 50:
         return (points, 'F')
@@ -191,17 +198,17 @@ def grade(s, db, ch, g, d, coh, sep, x):
     else:
         return (points, 'A')
 
+# Calculate metrics for algorithm
 def calculate_metrics(data, labels):
     # Need to have at least 2 clusters
     if len(set(labels)) < 2:
-        return (None, None, None, None, None, None, None, None)
+        return (None, None, None, None, None, None, None)
     else:
         silhouette = silhouette_score(data, labels)
         davies_bouldin = davies_bouldin_score(data, labels)
         calinski =  calinski_harabasz_score(data, labels)
-        gap = gap_statistic(data, labels)
         dunn = dunn_index(data, labels)
         coh = cohesion(data, labels)
         sep = separation(data, labels)
         x = xie_beni_index(data, labels)
-        return (silhouette, davies_bouldin, calinski, gap, dunn, coh, sep, x)
+        return (silhouette, davies_bouldin, calinski, dunn, coh, sep, x)

@@ -38,7 +38,7 @@ RUN python -c "import nltk; \
 # Copy new data into container
 COPY data/govInfo /data/gov
 COPY data/hcpss /data/hcpss
-COPY data/privacy_law_corpus-original_english_text_files /data/corpus
+COPY data/gdpr /data/corpus
 
 # COPY scripts/output /data/output
 
