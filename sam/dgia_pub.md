@@ -10,7 +10,7 @@ use unclassified legal documents as test in order to find methods to create and 
 - Creation and Analysis of an International Corpus of Privacy Laws: [document](notes/2024.lrec-main.365.pdf) notes
 - Similar Cases Recommendation using Legal Knowledge Graphs: [document](notes/2107.04771v2.pdf) notes
 
-## Approach
+## Proposed Approach
 1) Find documents related to a topic - not a keyword but the topic! Potential technique: Document Level Topic Modelling and Indexing
 2) Given a new policy document, find impacted compliance and standards documents. Potential technique: Logical Document Semantic Comparison
 3) Find documents whose changes would **most** impact other documents, standards, etc. along with identifying nature of said changes. Potential technique: Fine Tuning across multiple document types
@@ -20,9 +20,9 @@ use unclassified legal documents as test in order to find methods to create and 
 7) Find documents that have low impact on others, but combined could have most influence. Potential technique: Semantic Understanding
 
 ## Current Algorithms
-1) [Latent Dirichlet Allocation](<notes/Latent Dirichlet Allocation>) (LDA) - unsupervised clustering of text that attempts to group words and documents into a predefined number of clusters. these clusters represent individual topics.
+1) [Latent Dirichlet Allocation](<notes/Latent Dirichlet Allocation.md>) (LDA) - unsupervised clustering of text that attempts to group words and documents into a predefined number of clusters. these clusters represent individual topics.
 2) [Density-Based Spatial Clustering of Applications with Noise](<notes/Density-Based Spatial Clustering of Applications with Noise.md>) (DBSCAN) - finds core samples of high density and expands clusters from them.
-3) [K-means](notes/K-means) - group similar text data like documents, sentences, words, etc. into clusters
+3) [K-means](notes/K-means.md) - group similar text data like documents, sentences, words, etc. into clusters
 
 ## Python Modules
 - [NetworkX](https://networkx.org/documentation/stable/index.html) (graph_file_analysis_app) - 
@@ -46,7 +46,7 @@ use unclassified legal documents as test in order to find methods to create and 
 			- tf = how many times a word appears in a document
 			- tf-idf = how rare a word is across collection of documents
 		- LatentDirichletAllocation - "Latent Dirichlet Allocation with online variational Bayes algorithm"
-			- [Latent Dirichlet Allocation](<notes/Latent Dirichlet Allocation>): generative statistical model for automatically extracting topics in textual corpora
+			- [Latent Dirichlet Allocation](<notes/Latent Dirichlet Allocation.md>): generative statistical model for automatically extracting topics in textual corpora
 			- online variational Bayes algorithm - estimates posterior of complex hierarchical Bayesian models
 				- online = problems have no or incomplete knowledge of the future (ex: the ski problem, do you buy skis for a one-time cost or rent them at a lower but repeated cost? you'd have to guess how many times you go skiing and then if it would be cheaper to rent or buy the skis. this is online because you do not know how many times you will go skiing so your information is incomplete)
 				- offline = complete information assumed
@@ -75,9 +75,29 @@ use unclassified legal documents as test in order to find methods to create and 
 - [re](https://docs.python.org/3/library/re.html) (read_files) - regular expression matching operations
 
 ## GitHub Files
-**/scripts/corpus_processor_1.py:** process directory of text files, extracting keywords and named entities. Performs topic modelling with LDA and t-SNE dimensionality reduction. 
+**../scripts/corpus_processor_1.py:** processes a directory of text files, extracting keywords and named entities. Performs topic modelling with LDA and t-SNE dimensionality reduction. 
 
-**/scripts/corpus_processor_2.py:** process directory of text files to compute keyword and entity overlaps between them. Generates embeddings using pre-trained model, then finds and ranks the most related files based on embeddings.
+**../scripts/corpus_processor_2.py:** processes a directory of text files to compute keyword and entity overlaps between them. Generates embeddings using pre-trained model, then finds and ranks the most related files based on embeddings.
+
+**../scripts/graph_file_analysis_app.py:** loads processed data into a graph for visual analysis. Displays both keyword and document similarity data. 
+
+**../scripts/lda_file_analysis_app.py:** loads processed data and performs [Latent Dirichlet Allocation](<notes/Latent Dirichlet Allocation.md>) analysis. Results are graphed for visual analysis.
+
+**../scripts/read_files.py:** reads all files in a directory, prints their content to the command line, and saves said content to a JSON file in the specified output folder. 
+
+**scripts/agglomerative_clustering.py:** loads keywords data and performs Agglomerative Clustering, then graphs the clusters for visual analysis and displays numerical metrics for quantitative analysis. 
+
+**scripts/GMM_clustering.py:** abc
+
+**scripts/mean_shift_clustering.py:** abc
+
+**scripts/multiData_clustering.py:** abc
+
+**scripts/scraper.py:** abc
+
+**scripts/spectral_clustering.py:** abc
+
+**scripts/testing_clustering.py:** abc
 
 ## Running Docker
 

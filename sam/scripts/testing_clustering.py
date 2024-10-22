@@ -93,6 +93,13 @@ st.title("Clustering Algorithm Testing Suite")
 # Hardcoded filename
 filename = os.getenv('OUTPUT_PATH', '/app/output') + '/keywords.json'
 
+# Selected filename
+output_path = os.getenv('OUTPUT_PATH', '/app/output')
+file_path = st.selectbox("Select Dataset", options=[output_path + '/general/keywords.json', output_path + '/govInfo/keywords.json', output_path + '/hcpss/keywords.json'])
+
+if file_path:
+    filename = file_path
+
 # Load data
 data = load_data(filename)
 

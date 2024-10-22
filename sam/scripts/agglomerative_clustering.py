@@ -151,7 +151,8 @@ def main():
     st.title("Agglomerative Clustering App")
 
     # Dropdown for selecting the dataset
-    file_path = st.selectbox("Select Dataset", options=[os.getenv('OUTPUT_PATH', '/app/output') + '/keywords.json'])
+    output_path = os.getenv('OUTPUT_PATH', '/app/output')
+    file_path = st.selectbox("Select Dataset", options=[output_path + '/general/keywords.json', output_path + '/govInfo/keywords.json', output_path + '/hcpss/keywords.json'])
 
     if file_path:
         run_clustering(file_path)
