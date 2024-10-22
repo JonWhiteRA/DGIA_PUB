@@ -157,10 +157,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process a directory of text files, extract keywords, entities, and LDA topics.")
     parser.add_argument("--input_dir", type=str, help="The path to the directory containing the text files.")
     parser.add_argument("--top_n", type=int, default=25, help="The number of top keywords to extract. Default is 25.")
-    parser.add_argument("--num_topics", type=int, default=5, help="The number of topics for LDA. Default is 5.")
+    parser.add_argument("--num_topics", type=int, default=25, help="The number of topics for LDA. Default is 5.")
     parser.add_argument("--n_top_words", type=int, default=10, help="The number of top words per topic. Default is 10.")
     parser.add_argument("--output_dir", type=str, default="output", help="The output directory for saving results. Default is 'output'.")
-    
     args = parser.parse_args()
 
     if not os.path.isdir(args.input_dir):
