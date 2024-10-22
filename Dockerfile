@@ -53,6 +53,10 @@ COPY scripts/*.py /app/
 
 # Copy scripts from sam folder
 COPY sam/scripts/*_clustering.py /app/
+COPY sam/scripts/app.py /app/
+COPY sam/scripts/metrics.py /app/
+COPY sam/scripts/tools.py /app/
+COPY sam/scripts/multi* /app/
 
 # Save output to volume
 VOLUME /app/output

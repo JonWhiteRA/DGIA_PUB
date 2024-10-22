@@ -1,16 +1,20 @@
 import os
 import json
+import subprocess
+import bisect
 import numpy as np
+import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
-from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering, MeanShift, DBSCAN, OPTICS, Birch
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-from sklearn.metrics import silhouette_score, davies_bouldin_score, calinski_harabasz_score
+from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering, MeanShift, DBSCAN, OPTICS, Birch, HDBSCAN
 
-ALGORITHMS = ['K-Means', 'Agglomerative', 'Spectral', 
-                'Mean Shift', 'DBSCAN', 'OPTICS', 'Birch']
+from metrics import *
+
+CLUSTER_NUM_ALGORITHMS = ['K-Means', 'Agglomerative']
 OUTPUT_PATH = os.getenv('OUTPUT_PATH', '/app/output')
+AVAILABLE_FILES = ['keywords.json', 'output_embeddings.json', 'entities.json']
 DATASETS_OUTPUT = {
             'General': os.path.join(OUTPUT_PATH, 'general'),
             'GovInfo': os.path.join(OUTPUT_PATH, 'govInfo'),
@@ -21,19 +25,22 @@ DATASETS_DATA = {
         "GovInfo": "/data/gov/",
         "General": "/data/corpus/"
     }
-
-element_count = 0
+ALGORITHM_LOOKUP = {
+    'K-Means'       :   KMeans,
+    'Agglomerative' :   AgglomerativeClustering,
+    'Spectral'      :   SpectralClustering,
+    'Mean Shift'    :   MeanShift,
+    'DBSCAN'        :   DBSCAN,
+    'HDBSCAN'       :   HDBSCAN,
+    'OPTICS'        :   OPTICS,
+    'Birch'         :   Birch
+}
 
 # Load the JSON data
 def load_data(file_path):
     with open(file_path, 'r') as file:
         data = json.load(file)
     return data
-
-def get_element_count():
-    global element_count
-    element_count += 1
-    return element_count
 
 # Prepare feature matrix for keywords
 def prepare_feature_matrix_keywords(data):
@@ -51,7 +58,6 @@ def prepare_feature_matrix_keywords(data):
         for keyword, frequency in keywords:
             index = keyword_list.index(keyword)
             feature_matrix[i, index] = frequency
-    
     return titles, feature_matrix
 
 # Prepare feature matrix for embeddings
@@ -62,48 +68,33 @@ def prepare_feature_matrix_embeddings(data):
 
 # Prepare feature matrix for entities
 def prepare_feature_matrix_entities(data):
-    print("in tools.py")
     titles = list(data.keys())
     entity_set = set()
-    
-    print("entering for loop")
     for entities in data.values():
         for entity in entities:
             entity_set.add(entity[0])
-    print("done for loop")
     entity_list = sorted(entity_set)
     feature_matrix = np.zeros((len(data), len(entity_list)))
-    print("entering another for loop")
     for i, (title, entities) in enumerate(data.items()):
         for entity in entities:
-            index = entity_list.index(entity[0])  # Get the entity name
-            feature_matrix[i, index] = entity[2]  # Use the frequency
-    print("returning")
+            index = entity_list.index(entity[0])
+            feature_matrix[i, index] = entity[2]
     return titles, feature_matrix
 
-# Function to perform clustering
-def perform_clustering(algorithm, feature_matrix, n_clusters):
-    if algorithm == 'K-Means':
-        model = KMeans(n_clusters=n_clusters)
-    elif algorithm == 'Agglomerative':
-        model = AgglomerativeClustering(n_clusters=n_clusters)
-    elif algorithm == 'Spectral':
-        model = SpectralClustering(n_clusters=n_clusters, assign_labels="discretize")
-    elif algorithm == 'Mean Shift':
-        model = MeanShift()
-    elif algorithm == 'DBSCAN':
-        model = DBSCAN()
-    elif algorithm == 'OPTICS':
-        model = OPTICS()
-    elif algorithm == 'Birch':
-        model = Birch()
-    
-    labels = model.fit_predict(feature_matrix)
-    return labels
+def run_alg(a, features, n):
+    model_class = ALGORITHM_LOOKUP[a]
+    if a in CLUSTER_NUM_ALGORITHMS:
+        if a == "Spectral":
+            model = model_class(n_clusters=n, assign_labels="discretize")
+        else:
+            model = model_class(n_clusters=n)
+    else:
+        model = model_class()
+    clusters = model.fit_predict(features)
+    return clusters
 
-# Main function for clustering
-def run_clustering(selected_file, file_path, algorithm, n_clusters):
-    print("running algorithm: " + str(algorithm) + " on " + file_path)
+# Function to run clustering algorithms
+def generate_features(selected_file, file_path):
     data = load_data(file_path)
 
     if isinstance(data, dict):
@@ -114,13 +105,9 @@ def run_clustering(selected_file, file_path, algorithm, n_clusters):
         else:
             titles, feature_matrix = prepare_feature_matrix_keywords(data)
 
-        feature_matrix = standardize_feature_matrix(feature_matrix)
-        clusters = perform_clustering(algorithm, feature_matrix, n_clusters)
+        feature_matrix = StandardScaler().fit_transform(feature_matrix)
 
-        return (feature_matrix, clusters, titles)
-
-def standardize_feature_matrix(feature_matrix):
-        return StandardScaler().fit_transform(feature_matrix)
+        return (titles, feature_matrix)
 
 def plot_clusters(feature_matrix, clusters, pca_dims, titles):
         pca = PCA(n_components=pca_dims)
@@ -167,62 +154,117 @@ def plot_clusters(feature_matrix, clusters, pca_dims, titles):
         # Show the plot in Streamlit
         st.plotly_chart(fig)
 
-def calculate_metrics(data, labels):
-    silhouette = silhouette_score(data, labels) if len(set(labels)) > 1 else None,
-    davies_bouldin = davies_bouldin_score(data, labels) if len(set(labels)) > 1 else None,
-    calinski =  calinski_harabasz_score(data, labels) if len(set(labels)) > 1 else None
-    return (silhouette, davies_bouldin, calinski)
+def spreadsheet_metrics(dataset_name, file_name, algorithm_name, data, labels):
+    (s, db, ch, g, d, coh, sep, x) = calculate_metrics(data, labels)
+    (score, grades) = grade(s, db, ch, g, d, coh, sep, x)
+    results = {
+        'Dataset'          : dataset_name,
+        'File'             : file_name,
+        'Algorithm'        : algorithm_name,
+        'Clusters'         : len(set(labels)) - (1 if -1 in labels else 0),
+        'Silhouette Score' : s,
+        'Davies-Bouldin'   : db,
+        'Calinski-Harabasz': ch,
+        'Gap Statistic'    : g,
+        'Dunn Index'       : d,
+        'Cohesion'         : cohesion(data, labels),
+        'Separation'       : separation(data, labels),
+        'Xie-Beni Index'   : xie_beni_index(data, labels),
+        'Score'            : score,
+        'Grade'            : grades
+    }
+    return results
 
 def display_metrics(feature_matrix, clusters):
         # Calculate clustering metrics
-        silhouette = silhouette_score(feature_matrix, clusters)
-        davies_bouldin = davies_bouldin_score(feature_matrix, clusters)
+        (s, db, ch, g, d, coh, sep, x) = calculate_metrics(feature_matrix, clusters)
+        (score, letter) = grade(s, db, ch, g, d, coh, sep, x)
 
         # Display metrics
         st.subheader("Clustering Metrics")
-        st.write(f"Silhouette Score: {silhouette:.2f}")
-        st.write(f"Davies-Bouldin Index: {davies_bouldin:.2f}")
+        st.write(f"Silhouette Score: {str(s)}")
+        st.write(f"Davies-Bouldin Index: {str(db)}")
+        st.write(f"Calinski-Harabasz: {str(ch)}")
+        st.write(f"Gap Statistic: {str(g)}")
+        st.write(f"Dunn Index: {str(d)}")
+        st.write(f"Overall Score: {str(score)}")
+        st.write(f"Overall Grade: {str(letter)}")
 
 def show_clustered_titles(clusters, titles):
-        # Checkbox to display clustered titles
-        show_clusters = st.checkbox("Show Clustered Titles")
-        
-        if show_clusters:
-            # Display results
-            clustered_titles = {i: [] for i in set(clusters)}
-            for title, cluster in zip(titles, clusters):
-                clustered_titles[cluster].append(title)
+        # Display results
+        clustered_titles = {i: [] for i in set(clusters)}
+        for title, cluster in zip(titles, clusters):
+            clustered_titles[cluster].append(title)
 
-            st.subheader("Clustered Titles")
-            for cluster_id, titles in clustered_titles.items():
-                st.write(f"**Cluster {cluster_id}:**")
-                st.write(", ".join(titles))
+        st.subheader("Clustered Titles")
+        for cluster_id, titles in clustered_titles.items():
+            st.write(f"**Cluster {cluster_id}:**")
+            st.write(", ".join(titles))
 
-def dataset_selection():
-    selected_dataset = st.selectbox("Select Dataset", options=list(DATASETS_OUTPUT.keys()), key=get_element_count())
-    return selected_dataset
+def single_selection(prompt, options, key):
+    # Initialize the session state for the specific key if it doesn't exist
+    if key not in st.session_state:
+        st.session_state[key] = options[0]  # Set default to the first option
 
-def file_selection(selected_dataset):
-    selected_file = st.selectbox("Select File", options=['keywords.json', 'output_embeddings.json', 'entities.json'], key=get_element_count())
-    file_path = os.path.join(DATASETS_OUTPUT[selected_dataset], selected_file)
-    return (selected_file, file_path)
+    # Create the selectbox and update the session state
+    selected_option = st.selectbox(
+        prompt,
+        options=options,
+        index=options.index(st.session_state[key]),
+        key=key
+    )
 
-def multifile_selection(selected_dataset):
-    selected_files = st.multiselect("Select JSON files for analysis", ['keywords.json', 'output_embeddings.json', 'entities.json'])
-    return selected_files
+    # Update session state only if the selected option changes
+    if selected_option != st.session_state[key]:
+        st.session_state[key] = selected_option
 
-def pca_dims_selection():
-    pca_dims = st.selectbox("Select PCA Dimensions", options=[2, 3], key=get_element_count())
-    return pca_dims
+    return st.session_state[key]
 
-def algorithm_selection():
-    return st.selectbox("Select Clustering Algorithm", options=ALGORITHMS, key=get_element_count())
+def multi_selection(prompt, options, key):
+    # Initialize the session state for the specific key if it doesn't exist
+    if key not in st.session_state:
+        st.session_state[key] = []  # Set default to an empty list
 
-def multialgorithm_selection():
-    return st.multiselect("Select Clustering Algorithm", options=ALGORITHMS, default=ALGORITHMS)
+    # Create the multiselect without a default parameter
+    selected_options = st.multiselect(
+        prompt,
+        options=options,
+        key=key
+    )
 
-def dataset_data(dataset):
-    return DATASETS_DATA[dataset]
+    # Update session state only if the selected options change
+    if selected_options != st.session_state[key]:
+        st.session_state[key] = selected_options
 
-def dataset_output(dataset):
-    return DATASETS_OUTPUT[dataset]
+    return st.session_state[key]
+
+def preprocess_data(output_dir, folder_path):
+    if st.button("Load Data"):
+        st.session_state.is_running = True
+        command1 = f"python corpus_processor_1.py --output_dir {output_dir} {folder_path}"
+        command2 = f"python corpus_processor_2.py --output_dir {output_dir} {folder_path}"
+
+        output_dir_contents = os.listdir(output_dir)
+
+        if "entities.json" in output_dir_contents:
+            if "top_related_files_entities.json" in output_dir_contents:
+                st.session_state.output = "Data already processed."
+            else:
+                result = subprocess.run(command2, shell=True, capture_output=True, text=True)
+                st.session_state.output = result.stdout if result.returncode == 0 else result.stderr
+        else:
+            result = subprocess.run(command1, shell=True, capture_output=True, text=True)
+            st.session_state.output = result.stdout if result.returncode == 0 else result.stderr
+            if result.returncode == 0:
+                result2 = subprocess.run(command2, shell=True, capture_output=True, text=True)
+                st.session_state.output += "\n" + (result2.stdout if result2.returncode == 0 else result2.stderr)
+
+        st.session_state.is_running = False
+
+    # Conditional display
+    if st.session_state.is_running:
+        st.spinner("Running script...")
+    else:
+        if st.session_state.output:
+            st.write("Results:")
+            st.code(st.session_state.output)
