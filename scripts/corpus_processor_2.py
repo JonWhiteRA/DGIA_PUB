@@ -6,7 +6,7 @@ import argparse
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
-import PyPDF2
+from read_data_files import read_files_in_directory
 
 # Function to find overlaps between sets of data (keywords or entities)
 def find_overlaps(data):
@@ -54,38 +54,13 @@ def get_top_related_files(overlaps, top_n=10):
     return related_files
 
 # Function to generate embeddings for the documents
-def generate_embeddings(directory, model_name='all-MiniLM-L6-v2'):
+def generate_embeddings(data_files_dict, model_name='all-MiniLM-L6-v2'):
     model = SentenceTransformer(model_name)
     embeddings_dict = {}
 
     # Iterate over all files in the directory
-    for filename in os.listdir(directory):
-        file_path = os.path.join(directory, filename)
-        
-        if filename.endswith(".txt"):
-            # Read content from text files
-            try:
-                with open(file_path, "r", encoding="utf-8") as file:
-                    text = file.read()
-            except UnicodeDecodeError as e:
-                print(f"Skipping file {filename} due to decoding error: {e}")
-                continue  # Skip to the next file
-            
-        elif filename.endswith(".pdf"):
-            # Read content from PDF files
-            text = ""
-            try:
-                with open(file_path, "rb") as file:
-                    reader = PyPDF2.PdfReader(file)
-                    for page in reader.pages:
-                        text += page.extract_text() or ""  # Append text from each page
-            except Exception as e:
-                print(f"Skipping file {filename} due to error: {e}")
-                continue  # Skip to the next file
-
-        else:
-            print(f"Skipping file {filename} (unsupported format).")
-            continue  # Skip unsupported files
+    for filename in data_files_dict :
+        text = data_files_dict[filename]
 
         # Replace newlines with spaces in the entire text
         text = text.replace('\n', ' ').replace('\r', ' ')
@@ -155,7 +130,9 @@ def main(keywords_file, entities_file, embeddings_file, directory, output_dir, t
             embeddings_dict = json.load(f)
         print(f"Loaded embeddings from {embeddings_file}.")
     else:
-        embeddings_dict = generate_embeddings(directory)
+        data_files_dict = read_files_in_directory(directory)
+
+        embeddings_dict = generate_embeddings(data_files_dict)
         embeddings_file = 'output_embeddings.json'
         os.makedirs(output_dir, exist_ok=True)
         embeddings_file_path = os.path.join(output_dir, embeddings_file)
@@ -222,7 +199,7 @@ def main(keywords_file, entities_file, embeddings_file, directory, output_dir, t
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Compute overlaps between keywords and entities from JSON files, generate embeddings if they don't exist, and generate top related embeddings file.")
-    parser.add_argument("directory", type=str, help="The directory containing the text files for embedding generation.")
+    parser.add_argument("--input_dir", type=str, help="The directory containing the text files for embedding generation.")
     parser.add_argument("--top_n", type=int, default=10, help="The number of top related files to retrieve. Default is 10.")
     parser.add_argument("--output_dir", type=str, default="output", help="The output directory for saving results. Default is 'output'.")
 
@@ -232,4 +209,4 @@ if __name__ == "__main__":
     entities_file = make_absolute_path(args.output_dir, "entities.json")
     embeddings_file = make_absolute_path(args.output_dir, "embeddings.json")
 
-    main(keywords_file, entities_file, embeddings_file, args.directory, args.output_dir, top_n=args.top_n)
+    main(keywords_file, entities_file, embeddings_file, args.input_dir, args.output_dir, top_n=args.top_n)
