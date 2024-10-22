@@ -1,11 +1,7 @@
 import streamlit as st
-import numpy as np
 import pandas as pd
 import os
 import pickle
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.decomposition import LatentDirichletAllocation
-from sklearn.manifold import TSNE
 import plotly.graph_objects as go
 import plotly.express as px
 from scipy.spatial import distance
@@ -57,7 +53,6 @@ filenames = []
 # Get environment variables
 corpus_path = os.getenv('CORPUS_PATH', '/data/corpus')  # Optional default value
 output_path = os.getenv('OUTPUT_PATH', '/app/output')  # Optional default value CHANGED
-
 
 directory_path = st.sidebar.text_input("Enter directory path", corpus_path)
 output_directory_path = st.sidebar.text_input("Enter output directory path", output_path)

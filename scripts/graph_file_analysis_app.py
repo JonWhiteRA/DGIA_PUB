@@ -5,17 +5,6 @@ import streamlit as st
 import pandas as pd
 import os
 
-# Get environment variables
-corpus_path = os.getenv('CORPUS_PATH', '/data/corpus')  # Optional default value
-output_path = os.getenv('OUTPUT_PATH', '/app/output')  # Optional default value CHANGED
-
-# Step 1: Load the JSON data
-with open(output_path + '/top_related_files_keywords.json', 'r') as file:
-    keyword_data = json.load(file)
-
-with open(output_path + '/top_related_files_similarity.json', 'r') as file:
-    document_data = json.load(file)
-
 # Function to create a NetworkX graph based on a threshold
 def create_graph(data, threshold):
     G = nx.Graph()
@@ -43,27 +32,6 @@ def create_table(G, selected_files):
     # Create a DataFrame with each row's first element as the index
     df = pd.DataFrame(table_data)
     return df
-
-# Step 2: Streamlit interface
-st.title('File Relationships Graph')
-
-# Dropdown for selecting files, ordered alphabetically
-common_files = sorted(set(keyword_data.keys()).union(set(document_data.keys())))
-
-# Print out the total number of files
-st.write(f"Total number of files: {len(common_files)}")
-
-# Checkbox for selecting all files
-select_all = st.checkbox("Select All Files")
-
-# Adjust the selected files based on the select all checkbox
-if select_all:
-    selected_files = common_files
-else:
-    selected_files = st.multiselect('Select file(s) to visualize', common_files)
-
-# Toggle for showing/hiding labels
-show_labels = st.checkbox('Show labels', value=True)
 
 def plot_graph(G, selected_files, title, color='blue', selected_color='limegreen'):
     # Create a subgraph for the selected files and their relationships
@@ -141,8 +109,42 @@ def plot_graph(G, selected_files, title, color='blue', selected_color='limegreen
                         xaxis=dict(showgrid=False, zeroline=False),
                         yaxis=dict(showgrid=False, zeroline=False))
                     )
-
     return fig
+
+# Get environment variables
+corpus_path = os.getenv('CORPUS_PATH', '/data/corpus')  # Optional default value
+output_path = os.getenv('OUTPUT_PATH', '/app/output')  # Optional default value CHANGED
+
+corpus_path = st.sidebar.text_input("Enter Input Directory Path", corpus_path)
+output_path = st.sidebar.text_input("Enter Output Directory Path", output_path)
+
+# Step 1: Load the JSON data
+with open(output_path + '/top_related_files_keywords.json', 'r') as file:
+    keyword_data = json.load(file)
+
+with open(output_path + '/top_related_files_similarity.json', 'r') as file:
+    document_data = json.load(file)
+
+# Step 2: Streamlit interface
+st.title('File Relationships Graph')
+
+# Dropdown for selecting files, ordered alphabetically
+common_files = sorted(set(keyword_data.keys()).union(set(document_data.keys())))
+
+# Print out the total number of files
+st.write(f"Total number of files: {len(common_files)}")
+
+# Checkbox for selecting all files
+select_all = st.checkbox("Select All Files")
+
+# Adjust the selected files based on the select all checkbox
+if select_all:
+    selected_files = common_files
+else:
+    selected_files = st.multiselect('Select file(s) to visualize', common_files)
+
+# Toggle for showing/hiding labels
+show_labels = st.checkbox('Show labels', value=True)
 
 # Step 3: Create and display the graphs and tables if files are selected
 if selected_files:
@@ -172,18 +174,12 @@ if selected_files:
     df_document = create_table(document_graph, selected_files)
     st.dataframe(df_document)
 
-    directory_path = st.sidebar.text_input("Enter corpus directory path", corpus_path)
-    output_path = st.sidebar.text_input("Enter corpus directory path", output_path)
-
     # Expander for displaying content of selected files if not selecting all files
     if not select_all:
         st.subheader("Selected Files Content")
-        #directory_path = corpus_path
-        #directory_path = st.sidebar.text_input("Enter directory path", "../data/privacy_law_corpus-original_english_text_files")
-        
-
+    
         for selected_file in selected_files:
-            file_path = os.path.join(directory_path, selected_file)
+            file_path = os.path.join(corpus_path, selected_file)
             if os.path.exists(file_path):
                 with open(file_path, "r", encoding="utf-8") as file:
                     file_content = file.read()
@@ -191,7 +187,7 @@ if selected_files:
                 with st.expander(f"Content of {selected_file}"):
                     st.write(file_content)
             else:
-                st.warning(f"File {selected_file} not found in the directory {directory_path}.")
+                st.warning(f"File {selected_file} not found in the directory {corpus_path}.")
 
 else:
     st.write("Please select a file to visualize its relationships.")
