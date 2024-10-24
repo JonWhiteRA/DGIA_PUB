@@ -1,0 +1,64 @@
+Article 46
+
+Paragraph 1.0:
+• In the absence of a decision pursuant toArticle 45(3), a controller or processor may transfer personal data to a third country or an international organisation only if the controller or processor has provided appropriate safeguards, and on condition that enforceable data subject rights and effective legal remedies for data subjects are available.
+
+Paragraph 2.0:
+• The appropriate safeguards referred to in paragraph 1 may be provided for, without requiring any specific authorisation from a supervisory authority, by:a legally binding and enforceable instrument between public authorities or bodies;binding corporate rules in accordance withArticle 47;standard data protection clauses adopted by the Commission in accordance with the examination procedure referred to inArticle 93(2);standard data protection clauses adopted by a supervisory authority and approved by the Commission pursuant to the examination procedure referred to inArticle 93(2);an approved code of conduct pursuant toArticle 40together with binding and enforceable commitments of the controller or processor in the third country to apply the appropriate safeguards, including as regards data subjects’ rights; oran approved certification mechanism pursuant toArticle 42together with binding and enforceable commitments of the controller or processor in the third country to apply the appropriate safeguards, including as regards data subjects’ rights.
+
+Paragraph 2.1:
+• a legally binding and enforceable instrument between public authorities or bodies;
+
+Paragraph 2.2:
+• binding corporate rules in accordance withArticle 47;
+
+Paragraph 2.3:
+• standard data protection clauses adopted by the Commission in accordance with the examination procedure referred to inArticle 93(2);
+
+Paragraph 2.4:
+• standard data protection clauses adopted by a supervisory authority and approved by the Commission pursuant to the examination procedure referred to inArticle 93(2);
+
+Paragraph 2.5:
+• an approved code of conduct pursuant toArticle 40together with binding and enforceable commitments of the controller or processor in the third country to apply the appropriate safeguards, including as regards data subjects’ rights; or
+
+Paragraph 2.6:
+• an approved certification mechanism pursuant toArticle 42together with binding and enforceable commitments of the controller or processor in the third country to apply the appropriate safeguards, including as regards data subjects’ rights.
+
+Paragraph 3.0:
+• a legally binding and enforceable instrument between public authorities or bodies;
+
+Paragraph 4.0:
+• binding corporate rules in accordance withArticle 47;
+
+Paragraph 5.0:
+• standard data protection clauses adopted by the Commission in accordance with the examination procedure referred to inArticle 93(2);
+
+Paragraph 6.0:
+• standard data protection clauses adopted by a supervisory authority and approved by the Commission pursuant to the examination procedure referred to inArticle 93(2);
+
+Paragraph 7.0:
+• an approved code of conduct pursuant toArticle 40together with binding and enforceable commitments of the controller or processor in the third country to apply the appropriate safeguards, including as regards data subjects’ rights; or
+
+Paragraph 8.0:
+• an approved certification mechanism pursuant toArticle 42together with binding and enforceable commitments of the controller or processor in the third country to apply the appropriate safeguards, including as regards data subjects’ rights.
+
+Paragraph 9.0:
+• Subject to the authorisation from the competent supervisory authority, the appropriate safeguards referred to in paragraph 1 may also be provided for, in particular, by:contractual clauses between the controller or processor and the controller, processor or the recipient of the personal data in the third country or international organisation; orprovisions to be inserted into administrative arrangements between public authorities or bodies which include enforceable and effective data subject rights.
+
+Paragraph 9.1:
+• contractual clauses between the controller or processor and the controller, processor or the recipient of the personal data in the third country or international organisation; or
+
+Paragraph 9.2:
+• provisions to be inserted into administrative arrangements between public authorities or bodies which include enforceable and effective data subject rights.
+
+Paragraph 10.0:
+• contractual clauses between the controller or processor and the controller, processor or the recipient of the personal data in the third country or international organisation; or
+
+Paragraph 11.0:
+• provisions to be inserted into administrative arrangements between public authorities or bodies which include enforceable and effective data subject rights.
+
+Paragraph 12.0:
+• The supervisory authority shall apply the consistency mechanism referred to inArticle 63in the cases referred to in paragraph 3 of this Article.
+
+Paragraph 13.0:
+• 1Authorisations by a Member State or supervisory authority on the basis of Article 26(2) ofDirective 95/46/ECshall remain valid until amended, replaced or repealed, if necessary, by that supervisory authority.2Decisions adopted by the Commission on the basis of Article 26(4) ofDirective 95/46/ECshall remain in force until amended, replaced or repealed, if necessary, by a Commission Decision adopted in accordance with paragraph 2 of this Article.

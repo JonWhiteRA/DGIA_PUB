@@ -1,0 +1,1 @@
+The processor shall notify the controller without undue delay after becoming aware of a personal data breach.

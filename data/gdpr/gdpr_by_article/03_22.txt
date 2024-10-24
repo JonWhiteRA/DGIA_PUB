@@ -1,0 +1,31 @@
+Article 22
+
+Paragraph 1.0:
+• The data subject shall have the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal effects concerning him or her or similarly significantly affects him or her.
+
+Paragraph 2.0:
+• Paragraph 1 shall not apply if the decision:is necessary for entering into, or performance of, a contract between the data subject and a data controller;is authorised by Union or Member State law to which the controller is subject and which also lays down suitable measures to safeguard the data subject’s rights and freedoms and legitimate interests; oris based on the data subject’s explicit consent.
+
+Paragraph 2.1:
+• is necessary for entering into, or performance of, a contract between the data subject and a data controller;
+
+Paragraph 2.2:
+• is authorised by Union or Member State law to which the controller is subject and which also lays down suitable measures to safeguard the data subject’s rights and freedoms and legitimate interests; or
+
+Paragraph 2.3:
+• is based on the data subject’s explicit consent.
+
+Paragraph 3.0:
+• is necessary for entering into, or performance of, a contract between the data subject and a data controller;
+
+Paragraph 4.0:
+• is authorised by Union or Member State law to which the controller is subject and which also lays down suitable measures to safeguard the data subject’s rights and freedoms and legitimate interests; or
+
+Paragraph 5.0:
+• is based on the data subject’s explicit consent.
+
+Paragraph 6.0:
+• In the cases referred to in points (a) and (c) of paragraph 2, the data controller shall implement suitable measures to safeguard the data subject’s rights and freedoms and legitimate interests, at least the right to obtain human intervention on the part of the controller, to express his or her point of view and to contest the decision.
+
+Paragraph 7.0:
+• Decisions referred to in paragraph 2 shall not be based on special categories of personal data referred to inArticle 9(1), unless point (a) or (g) ofArticle 9(2) applies and suitable measures to safeguard the data subject’s rights and freedoms and legitimate interests are in place.

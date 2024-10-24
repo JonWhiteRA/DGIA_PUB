@@ -1,0 +1,1 @@
+the ability to ensure the ongoing confidentiality, integrity, availability and resilience of processing systems and services;

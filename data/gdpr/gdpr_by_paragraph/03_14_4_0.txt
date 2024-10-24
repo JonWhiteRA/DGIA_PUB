@@ -1,0 +1,1 @@
+the purposes of the processing for which the personal data are intended as well as the legal basis for the processing;

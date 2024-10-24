@@ -1,0 +1,1 @@
+Where processing is based on consent, the controller shall be able to demonstrate that the data subject has consented to processing of his or her personal data.

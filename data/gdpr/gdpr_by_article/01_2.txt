@@ -1,0 +1,37 @@
+Article 2
+
+Paragraph 1.0:
+• This Regulation applies to the processing of personal data wholly or partly by automated means and to the processing other than by automated means of personal data which form part of a filing system or are intended to form part of a filing system.
+
+Paragraph 2.0:
+• This Regulation does not apply to the processing of personal data:in the course of an activity which falls outside the scope of Union law;by the Member States when carrying out activities which fall within the scope ofChapter 2 of Title V of the TEU;by a natural person in the course of a purely personal or household activity;by competent authorities for the purposes of the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including the safeguarding against and the prevention of threats to public security.
+
+Paragraph 2.1:
+• in the course of an activity which falls outside the scope of Union law;
+
+Paragraph 2.2:
+• by the Member States when carrying out activities which fall within the scope ofChapter 2 of Title V of the TEU;
+
+Paragraph 2.3:
+• by a natural person in the course of a purely personal or household activity;
+
+Paragraph 2.4:
+• by competent authorities for the purposes of the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including the safeguarding against and the prevention of threats to public security.
+
+Paragraph 3.0:
+• in the course of an activity which falls outside the scope of Union law;
+
+Paragraph 4.0:
+• by the Member States when carrying out activities which fall within the scope ofChapter 2 of Title V of the TEU;
+
+Paragraph 5.0:
+• by a natural person in the course of a purely personal or household activity;
+
+Paragraph 6.0:
+• by competent authorities for the purposes of the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including the safeguarding against and the prevention of threats to public security.
+
+Paragraph 7.0:
+• 1For the processing of personal data by the Union institutions, bodies, offices and agencies,Regulation (EC) No 45/2001applies.2Regulation (EC) No 45/2001 and other Union legal acts applicable to such processing of personal data shall be adapted to the principles and rules of this Regulation in accordance withArticle 98.
+
+Paragraph 8.0:
+• This Regulation shall be without prejudice to the application ofDirective 2000/31/EC, in particular of the liability rules of intermediary service providers in Articles 12 to 15 of that Directive.

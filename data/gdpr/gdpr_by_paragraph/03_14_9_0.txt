@@ -1,0 +1,1 @@
+the period for which the personal data will be stored, or if that is not possible, the criteria used to determine that period;

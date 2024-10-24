@@ -1,0 +1,142 @@
+Article 83
+
+Paragraph 1.0:
+• Each supervisory authority shall ensure that the imposition of administrative fines pursuant to this Article in respect of infringements of this Regulation referred to in paragraphs 4, 5 and 6 shall in each individual case be effective, proportionate and dissuasive.
+
+Paragraph 2.0:
+• 1Administrative fines shall, depending on the circumstances of each individual case, be imposed in addition to, or instead of, measures referred to in points (a) to (h) and (j) ofArticle 58(2).2When deciding whether to impose an administrative fine and deciding on the amount of the administrative fine in each individual case due regard shall be given to the following:the nature, gravity and duration of the infringement taking into account the nature scope or purpose of the processing concerned as well as the number of data subjects affected and the level of damage suffered by them;the intentional or negligent character of the infringement;any action taken by the controller or processor to mitigate the damage suffered by data subjects;the degree of responsibility of the controller or processor taking into account technical and organisational measures implemented by them pursuant toArticles 25and32;any relevant previous infringements by the controller or processor;the degree of cooperation with the supervisory authority, in order to remedy the infringement and mitigate the possible adverse effects of the infringement;the categories of personal data affected by the infringement;the manner in which the infringement became known to the supervisory authority, in particular whether, and if so to what extent, the controller or processor notified the infringement;where measures referred to inArticle 58(2) have previously been ordered against the controller or processor concerned with regard to the same subject-matter, compliance with those measures;adherence to approved codes of conduct pursuant toArticle 40or approved certification mechanisms pursuant toArticle 42; andany other aggravating or mitigating factor applicable to the circumstances of the case, such as financial benefits gained, or losses avoided, directly or indirectly, from the infringement.
+
+Paragraph 2.1:
+• the nature, gravity and duration of the infringement taking into account the nature scope or purpose of the processing concerned as well as the number of data subjects affected and the level of damage suffered by them;
+
+Paragraph 2.2:
+• the intentional or negligent character of the infringement;
+
+Paragraph 2.3:
+• any action taken by the controller or processor to mitigate the damage suffered by data subjects;
+
+Paragraph 2.4:
+• the degree of responsibility of the controller or processor taking into account technical and organisational measures implemented by them pursuant toArticles 25and32;
+
+Paragraph 2.5:
+• any relevant previous infringements by the controller or processor;
+
+Paragraph 2.6:
+• the degree of cooperation with the supervisory authority, in order to remedy the infringement and mitigate the possible adverse effects of the infringement;
+
+Paragraph 2.7:
+• the categories of personal data affected by the infringement;
+
+Paragraph 2.8:
+• the manner in which the infringement became known to the supervisory authority, in particular whether, and if so to what extent, the controller or processor notified the infringement;
+
+Paragraph 2.9:
+• where measures referred to inArticle 58(2) have previously been ordered against the controller or processor concerned with regard to the same subject-matter, compliance with those measures;
+
+Paragraph 2.1:
+• adherence to approved codes of conduct pursuant toArticle 40or approved certification mechanisms pursuant toArticle 42; and
+
+Paragraph 2.11:
+• any other aggravating or mitigating factor applicable to the circumstances of the case, such as financial benefits gained, or losses avoided, directly or indirectly, from the infringement.
+
+Paragraph 3.0:
+• the nature, gravity and duration of the infringement taking into account the nature scope or purpose of the processing concerned as well as the number of data subjects affected and the level of damage suffered by them;
+
+Paragraph 4.0:
+• the intentional or negligent character of the infringement;
+
+Paragraph 5.0:
+• any action taken by the controller or processor to mitigate the damage suffered by data subjects;
+
+Paragraph 6.0:
+• the degree of responsibility of the controller or processor taking into account technical and organisational measures implemented by them pursuant toArticles 25and32;
+
+Paragraph 7.0:
+• any relevant previous infringements by the controller or processor;
+
+Paragraph 8.0:
+• the degree of cooperation with the supervisory authority, in order to remedy the infringement and mitigate the possible adverse effects of the infringement;
+
+Paragraph 9.0:
+• the categories of personal data affected by the infringement;
+
+Paragraph 10.0:
+• the manner in which the infringement became known to the supervisory authority, in particular whether, and if so to what extent, the controller or processor notified the infringement;
+
+Paragraph 11.0:
+• where measures referred to inArticle 58(2) have previously been ordered against the controller or processor concerned with regard to the same subject-matter, compliance with those measures;
+
+Paragraph 12.0:
+• adherence to approved codes of conduct pursuant toArticle 40or approved certification mechanisms pursuant toArticle 42; and
+
+Paragraph 13.0:
+• any other aggravating or mitigating factor applicable to the circumstances of the case, such as financial benefits gained, or losses avoided, directly or indirectly, from the infringement.
+
+Paragraph 14.0:
+• If a controller or processor intentionally or negligently, for the same or linked processing operations, infringes several provisions of this Regulation, the total amount of the administrative fine shall not exceed the amount specified for the gravest infringement.
+
+Paragraph 15.0:
+• Infringements of the following provisions shall, in accordance with paragraph 2, be subject to administrative fines up to 10 000 000 EUR, or in the case of an undertaking, up to 2 % of the total worldwide annual turnover of the preceding financial year, whichever is higher:the obligations of the controller and the processor pursuant toArticles 8,11,25to39and42and43;the obligations of the certification body pursuant toArticles 42and43;the obligations of the monitoring body pursuant toArticle 41(4).
+
+Paragraph 15.1:
+• the obligations of the controller and the processor pursuant toArticles 8,11,25to39and42and43;
+
+Paragraph 15.2:
+• the obligations of the certification body pursuant toArticles 42and43;
+
+Paragraph 15.3:
+• the obligations of the monitoring body pursuant toArticle 41(4).
+
+Paragraph 16.0:
+• the obligations of the controller and the processor pursuant toArticles 8,11,25to39and42and43;
+
+Paragraph 17.0:
+• the obligations of the certification body pursuant toArticles 42and43;
+
+Paragraph 18.0:
+• the obligations of the monitoring body pursuant toArticle 41(4).
+
+Paragraph 19.0:
+• Infringements of the following provisions shall, in accordance with paragraph 2, be subject to administrative fines up to 20 000 000 EUR, or in the case of an undertaking, up to 4 % of the total worldwide annual turnover of the preceding financial year, whichever is higher:the basic principles for processing, including conditions for consent, pursuant toArticles 5,6,7and9;the data subjects’ rights pursuant toArticles 12to22;the transfers of personal data to a recipient in a third country or an international organisation pursuant toArticles 44to49;any obligations pursuant to Member State law adopted underChapter IX;non-compliance with an order or a temporary or definitive limitation on processing or the suspension of data flows by the supervisory authority pursuant toArticle 58(2) or failure to provide access in violation ofArticle 58(1).
+
+Paragraph 19.1:
+• the basic principles for processing, including conditions for consent, pursuant toArticles 5,6,7and9;
+
+Paragraph 19.2:
+• the data subjects’ rights pursuant toArticles 12to22;
+
+Paragraph 19.3:
+• the transfers of personal data to a recipient in a third country or an international organisation pursuant toArticles 44to49;
+
+Paragraph 19.4:
+• any obligations pursuant to Member State law adopted underChapter IX;
+
+Paragraph 19.5:
+• non-compliance with an order or a temporary or definitive limitation on processing or the suspension of data flows by the supervisory authority pursuant toArticle 58(2) or failure to provide access in violation ofArticle 58(1).
+
+Paragraph 20.0:
+• the basic principles for processing, including conditions for consent, pursuant toArticles 5,6,7and9;
+
+Paragraph 21.0:
+• the data subjects’ rights pursuant toArticles 12to22;
+
+Paragraph 22.0:
+• the transfers of personal data to a recipient in a third country or an international organisation pursuant toArticles 44to49;
+
+Paragraph 23.0:
+• any obligations pursuant to Member State law adopted underChapter IX;
+
+Paragraph 24.0:
+• non-compliance with an order or a temporary or definitive limitation on processing or the suspension of data flows by the supervisory authority pursuant toArticle 58(2) or failure to provide access in violation ofArticle 58(1).
+
+Paragraph 25.0:
+• Non-compliance with an order by the supervisory authority as referred to inArticle 58(2) shall, in accordance with paragraph 2 of this Article, be subject to administrative fines up to 20 000 000 EUR, or in the case of an undertaking, up to 4 % of the total worldwide annual turnover of the preceding financial year, whichever is higher.
+
+Paragraph 26.0:
+• Without prejudice to the corrective powers of supervisory authorities pursuant toArticle 58(2), each Member State may lay down the rules on whether and to what extent administrative fines may be imposed on public authorities and bodies established in that Member State.
+
+Paragraph 27.0:
+• The exercise by the supervisory authority of its powers under this Article shall be subject to appropriate procedural safeguards in accordance with Union and Member State law, including effective judicial remedy and due process.
+
+Paragraph 28.0:
+• 1Where the legal system of the Member State does not provide for administrative fines, this Article may be applied in such a manner that the fine is initiated by the competent supervisory authority and imposed by competent national courts, while ensuring that those legal remedies are effective and have an equivalent effect to the administrative fines imposed by supervisory authorities.2In any event, the fines imposed shall be effective, proportionate and dissuasive.3Those Member States shall notify to the Commission the provisions of their laws which they adopt pursuant to this paragraph by 25 May 2018 and, without delay, any subsequent amendment law or amendment affecting them.

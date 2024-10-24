@@ -1,0 +1,1 @@
+1The processor shall not engage another processor without prior specific or general written authorisation of the controller.2In the case of general written authorisation, the processor shall inform the controller of any intended changes concerning the addition or replacement of other processors, thereby giving the controller the opportunity to object to such changes.
