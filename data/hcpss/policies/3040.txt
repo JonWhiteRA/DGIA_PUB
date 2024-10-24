@@ -1,0 +1,135 @@
+
+I. Policy Value Statement
+
+
+
+The Board of Education of Howard County (Board) recognizes the value of technology security throughout the Howard County Public School System (HCPSS). The Board values the need for a clear and consistent technology security policy, in compliance with legal and regulatory mandates, that promotes awareness and communicates expectations for safeguarding and securing HCPSS technology.
+
+
+II. Purpose
+
+
+
+The purpose of this policy is to provide requirements for maintaining the confidentiality, integrity, availability, and accountability of HCPSS technology resources and data. The policy will address protection of HCPSS technology, account credentials, technology equipment accountability, network security, physical security, configuration management, and data security.
+
+
+III. Standards
+
+
+
+
+
+Protection of HCPSS Technology
+
+
+
+
+HCPSS reserves the right to take all necessary legal action to protect the confidentiality, integrity, availability, and accountability of its technology.
+
+
+
+HCPSS reserves the right to take all necessary legal action to prevent its technology from being used to attack, damage, harm, or exploit others.
+
+
+
+Use of HCPSS technology or non-HCPSS technology to gain or attempt to gain unauthorized access to any HCPSS system or information is prohibited.
+
+
+
+Use of HCPSS technology to gain or attempt to gain unauthorized access to any non-HCPSS system or information is prohibited.
+
+
+
+HCPSS reserves the right, in accordance with legal and regulatory mandates, to monitor, archive, audit, or purge the contents of electronic communications, files, and other material created or stored using HCPSS technology, or data transmitted over HCPSS networks.
+
+
+
+HCPSS reserves the right, in accordance with legal and regulatory mandates and as authorized by the Superintendent/designee, to access or disclose, for investigative purposes, the contents of electronic communications, files, and other material created or stored using HCPSS technology or data transmitted over HCPSS networks.
+
+
+
+Failure by any individual using HCPSS technology to comply with this policy will result in the temporary or permanent restriction of technology access privileges, in addition to any applicable disciplinary actions or financial obligations.
+
+
+
+HCPSS will maintain technology security incident response procedures in support of this policy and regulatory mandates including Maryland breach notification requirements.
+
+
+
+
+IV. Responsibilities
+
+
+
+
+
+The Superintendent/designee will maintain guidelines for secure configuration of HCPSS technology.
+
+
+
+The Superintendent/designee will maintain a process for creating, managing, and documenting account credentials.
+
+
+
+The Superintendent/designee will inform HCPSS technology users regarding the provisions of this policy at least annually.
+
+
+
+The Superintendent/designee will provide to the Board annually, a report evaluating technology security policy implementation.
+
+
+
+
+V. Delegation of Authority
+
+
+
+The Superintendent is authorized to develop appropriate procedures for the implementation of this policy within the limits set forth by this policy.
+
+
+VI. Definitions
+
+
+
+Within the context of this policy, the following definitions apply:
+
+
+VII. References
+
+
+
+A. Legal
+
+
+
+
+Electronic Communications Privacy Act/Stored Communications Act, 18 U.S.C. §2701-2712
+
+
+
+Family Educational Rights and Privacy Act (FERPA), 20 U.S.C. §1232(g)
+
+
+
+Title XVII, Children’s Internet Protection Act, 47 U.S.C. §254(h) and (l)
+
+
+
+Md. Code Ann, Com. Law §§ 14-3501 et seq. (2016) (Maryland Personal Information Protection Act)
+
+
+
+Md. Code Ann, State Govt. §§ 10-1301 to 10-1308 (2017) (Protection of Information by Government Agencies
+
+
+
+Md. Code Ann, Education §4-131 (2015)
+
+
+
+
+VIII. History
+
+
+
+ADOPTED:  March 11, 2010
