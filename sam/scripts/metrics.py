@@ -3,13 +3,13 @@ from sklearn.cluster import AgglomerativeClustering
 import numpy as np
 
 METRICS_THRESHOLDS = {
-    'Silhouette'        : [0.03, 0.07, 0.23, 0.67],
-    'Calinski-Harabasz' : [2.24, 5.59, 12.67, 54.84],
-    'Dunn Index'        : [0.93, 1.01, 1.23, 2.95],
-    'Davies-Bouldin'    : [0.23, 0.81, 1.77, 3.47],
+    'Silhouette'        : [0.0, 0.11, 0.32, 0.8],
+    'Calinski-Harabasz' : [2.61, 7.15, 15.3, 54.84],
+    'Dunn Index'        : [0.73, 0.99, 1.31, 4.88],
+    'Davies-Bouldin'    : [0.13, 0.61, 0.94, 2.08],
     'Cohesion'          : [0, 52.66, 19.76, 25.55],
     'Separation'        : [30.63, 47.84, 73.6, 126.25],
-    'Xie-Beni Index'    : [0.2, 0.42, 0.85, 1.00]
+    'Xie-Beni Index'    : [0.09, 0.24, 0.52, 1]
 }
 
 # Generated
@@ -157,9 +157,13 @@ def score(x, scores):
 
 # Grade cluster algorithm
 def grade(s, db, ch, d, coh, sep, x):
+    # if less than two clusters, automatic failure
+    if s is None:
+        return (0, 'F')
+
     # 100 points possible
     points = 0
-    errored = 0
+    errored = 2 # Because we don't use cohesion or separation
     # silhouette score: (-1, 1), want closer to 1
     points += score(s, METRICS_THRESHOLDS['Silhouette'])
     # # davies-bouldin: want nearly 0 score
@@ -169,31 +173,23 @@ def grade(s, db, ch, d, coh, sep, x):
     points += score(ch, METRICS_THRESHOLDS['Calinski-Harabasz'])
     # dunn index: higher is better, want > 1
     points += score(d, METRICS_THRESHOLDS['Dunn Index'])
-    # cohesion: lower is better
-    points += 100 - score(coh, METRICS_THRESHOLDS['Cohesion'])
-    # separation: higher is better
-    separation = score(sep, METRICS_THRESHOLDS['Separation'])
-    points += separation
     # xie-beni: lower is better
     xie = score(x, METRICS_THRESHOLDS['Xie-Beni Index'])
     points += 100 - xie
 
     if xie is None:
         errored += 1
-    if separation is None:
-        errored += 1
-    
     points = points / (len(set(METRICS_THRESHOLDS.keys())) - errored)
 
-    if points < 50:
+    if points <= 18:
         return (points, 'F')
-    elif points < 60:
+    elif points < 36:
         return (points, 'E')
-    elif points < 70:
+    elif points < 55.4:
         return (points, 'D')
-    elif points < 80:
+    elif points < 74:
         return (points, 'C')
-    elif points < 90:
+    elif points <= 80:
         return (points, 'B')
     else:
         return (points, 'A')

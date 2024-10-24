@@ -8,7 +8,7 @@ import streamlit as st
 import plotly.graph_objects as go
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering, MeanShift, DBSCAN, OPTICS, Birch, HDBSCAN
+from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering, MeanShift, DBSCAN, OPTICS, Birch, HDBSCAN, estimate_bandwidth
 
 from metrics import *
 
@@ -16,14 +16,18 @@ CLUSTER_NUM_ALGORITHMS = ['K-Means', 'Agglomerative']
 OUTPUT_PATH = os.getenv('OUTPUT_PATH', '/app/output')
 AVAILABLE_FILES = ['keywords.json', 'output_embeddings.json', 'entities.json']
 DATASETS_OUTPUT = {
-            'General': os.path.join(OUTPUT_PATH, 'general'),
+            'General': os.path.join(OUTPUT_PATH, 'corpus'),
             'GovInfo': os.path.join(OUTPUT_PATH, 'govInfo'),
-            'Howard County Public School System': os.path.join(OUTPUT_PATH, 'hcpss')
+            'Howard County Public School System': os.path.join(OUTPUT_PATH, 'hcpss'),
+            'GDPR By Paragraph' : os.path.join(OUTPUT_PATH, 'gdpr_by_paragraph'),
+            'GDPR By Article' : os.path.join(OUTPUT_PATH, 'gdpr_by_article')
         }
 DATASETS_DATA = {
         "Howard County Public School System": "/data/hcpss/",
-        "GovInfo": "/data/gov/",
-        "General": "/data/corpus/"
+        "GovInfo"                           : "/data/gov/",
+        "General"                           : "/data/corpus/",
+        "GDPR By Paragraph"                 : "/data/gdpr_by_paragraph",
+        "GDPR By Article"                   : "/data/gdpr_by_article"
     }
 ALGORITHM_LOOKUP = {
     'K-Means'       :   KMeans,
@@ -68,16 +72,13 @@ def prepare_feature_matrix_embeddings(data):
 
 # Prepare feature matrix for entities
 def prepare_feature_matrix_entities(data):
-    print("making feature matrix for entities!")
     titles = list(data.keys())
     entity_set = set()
-    print("looking through file")
     for entities in data.values():
         for entity in entities:
             entity_set.add(entity[0])
     entity_list = sorted(entity_set)
     feature_matrix = np.zeros((len(data), len(entity_list)))
-    print("creating feature matrix")
     for i, (title, entities) in enumerate(data.items()):
         for entity in entities:
             index = entity_list.index(entity[0])
@@ -92,7 +93,11 @@ def run_alg(a, features, n):
         else:
             model = model_class(n_clusters=n)
     else:
-        model = model_class()
+        if a == "Mean Shift":
+            bandwidth = estimate_bandwidth(features, quantile=0.2)
+            model = model_class(bandwidth=bandwidth)
+        else:
+            model = model_class()
     clusters = model.fit_predict(features)
     return clusters
 
@@ -105,7 +110,6 @@ def generate_features(selected_file, file_path):
             titles, feature_matrix = prepare_feature_matrix_embeddings(data)
         elif selected_file == 'entities.json':
             titles, feature_matrix = prepare_feature_matrix_entities(data)
-            print("done making feature matrix")
         else:
             titles, feature_matrix = prepare_feature_matrix_keywords(data)
 
@@ -243,13 +247,16 @@ def multi_selection(prompt, options, key):
 def preprocess_data(output_dir, folder_path):
     if st.button("Load Data"):
         st.session_state.is_running = True
-        command1 = f"python corpus_processor_1.py --output_dir {output_dir} {folder_path}"
-        command2 = f"python corpus_processor_2.py --output_dir {output_dir} {folder_path}"
+        st.spinner("Running script...")
+        command1 = f"python corpus_processor_1.py --output_dir {output_dir} --input_dir {folder_path}"
+        command2 = f"python corpus_processor_2.py --output_dir {output_dir} --input_dir {folder_path}"
 
-        output_dir_contents = os.listdir(output_dir)
+        try:
+            output_dir_contents = os.listdir(output_dir)
+        except FileNotFoundError:
+            output_dir_contents = []
 
         if "entities.json" in output_dir_contents:
-            print("entities file!")
             if "top_related_files_entities.json" in output_dir_contents:
                 st.session_state.output = "Data already processed."
             else:
