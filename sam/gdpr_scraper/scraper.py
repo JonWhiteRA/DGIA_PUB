@@ -104,7 +104,7 @@ def scrape_gdpr_article(num):
     return contents
 
 def save_to_csv(data, filename):
-    df = pd.DataFrame(data, columns=['Chapter', 'Article Number', 'Paragraph Num', 'Title', 'Content', 'Links', 'Source'])
+    df = pd.DataFrame(data, columns=['Chapter', 'Article Number', 'Paragraph Num', 'Title', 'Content', 'Source', 'Links'])
     df.to_csv(filename, index=False, mode='a', header=not pd.io.common.file_exists(filename))
 
 def main():
