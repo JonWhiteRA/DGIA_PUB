@@ -45,14 +45,13 @@ def extract_contents(li, article_number, title, parent_index, url):
     if nested_ol:
         nested_lis = nested_ol.find_all('li')
         for index, nested_li in enumerate(nested_lis, start=1):
-            # Recursively extract contents from nested <li>
             contents += extract_contents(nested_li, article_number, title, f"{parent_index}.{index}", url)
 
     return contents
 
 def extract_paragraphs(entry_content_div, article_number, title, url):
     contents = []
-    footnote_div = entry_content_div.find(id='wpcf-field-fussnote')  # Locate the footnote div
+    footnote_div = entry_content_div.find(id='wpcf-field-fussnote')
 
     paragraphs = entry_content_div.find_all('p')
     for paragraph in paragraphs:
@@ -100,7 +99,6 @@ def scrape_gdpr_article(num):
         if ol:
             lis = ol.find_all('li')
             for index, li in enumerate(lis, start=1):
-                # Use the recursive function to extract contents
                 contents += extract_contents(li, article_number, title, str(index), url)
 
     return contents
@@ -110,11 +108,9 @@ def save_to_csv(data, filename):
     df.to_csv(filename, index=False, mode='a', header=not pd.io.common.file_exists(filename))
 
 def main():
-    # Change this range according to how many articles you want to scrape
-    for num in range(1, 100):  # Example range from 60 to 65
-        print(f"Processing article {num}...")  # Output the current article number
+    for num in range(1, 100):
         contents = scrape_gdpr_article(num)
-        if contents:  # Ensure there's content to save
+        if contents:
             save_to_csv(contents, '/output/gdpr_articles.csv')
         else:
             print(f"No content found for article {num}.")

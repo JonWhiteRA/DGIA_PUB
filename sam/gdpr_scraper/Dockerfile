@@ -1,4 +1,3 @@
-# Use the official Python image from the Docker Hub
 FROM python:3.11-slim
 
 # Set the working directory inside the container
@@ -10,9 +9,8 @@ COPY requirements.txt .
 # Install the required packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of your application code into the container
+# Copy application
 COPY . .
 
-# Specify the command to run your script
-# CMD ["python", "scraper.py"]
-CMD ["python", "file_creation.py"]
+# Run scripts
+CMD ["bash", "run.sh"]
